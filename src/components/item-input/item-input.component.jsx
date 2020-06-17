@@ -18,7 +18,7 @@ const ItemTable = ({ data, handleChange, item, deleteItem, index }) => {
       <MyTextField 
         name='name'
         type='text'
-        onChange={(event) => handleChange(event, item.id)}
+        onChange={(event) => handleChange(event, index)}
         value={item.name}
         label='NAME'
         datalist={data}
@@ -28,7 +28,7 @@ const ItemTable = ({ data, handleChange, item, deleteItem, index }) => {
       <MyTextField 
         name='quantity'
         type='number'
-        onChange={(event) => handleChange(event, item.id)}
+        onChange={(event) => handleChange(event, index)}
         value={item.quantity}
         label='QUANTITY'
       />
@@ -37,7 +37,7 @@ const ItemTable = ({ data, handleChange, item, deleteItem, index }) => {
       <MyTextField 
         name='units'
         type='number'
-        onChange={(event) => handleChange(event, item.id)}
+        onChange={(event) => handleChange(event, index)}
         value={item.units}
         label='UNITS'
       /> 

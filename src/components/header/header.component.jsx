@@ -23,7 +23,7 @@ const Header = ({ currentUser, setCurrentUser, history, match }) => {
                             null
                     }
                     {
-                        currentUser && currentUser.type === 'admin' ?
+                        currentUser && currentUser.userType === 'a' ?
                             <Link className='option' to='/purchase'>
                                 PURCHASE
                             </Link> 
@@ -31,7 +31,7 @@ const Header = ({ currentUser, setCurrentUser, history, match }) => {
                             null
                     }
                     {
-                        currentUser && currentUser.type === 'admin' ?
+                        currentUser && currentUser.userType === 'a' ?
                         <Link className='option' to='/stock'>
                             STOCK
                         </Link> 

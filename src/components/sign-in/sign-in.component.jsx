@@ -9,6 +9,7 @@ import MyButton from '../my-button/my-button';
 import './sign-in.styles.css';
 
 
+
 class SignIn extends Component {
     constructor(props) {
         super(props);
@@ -31,34 +32,28 @@ class SignIn extends Component {
 
     handleSubmit = () => {
         const { setCurrentUser } = this.props;
-        console.log('aefad')
-        axios.post('http://localhost:9999/user/login', {
-            Email: this.state.userName,
-            Password: this.state.password
-          },)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        if(!this.state.isPasswordError && !this.state.isNameError){
-        setCurrentUser({
-            type: 'admin',
-            token: '12345'
-        });
-    }
-
-        this.setState({
-            password: '',
-        })
+        axios.post( 'http://localhost:9999/user/login', 
+                {
+                    Email: this.state.userName,
+                    Password: this.state.password
+                }
+            )
+            .then((res) => {
+                console.log(res);
+                setCurrentUser(res.data.data);
+            })
+            .catch((error) => {
+                console.log(error.response.data);
+                this.setState({
+                    password: '',
+                })
+            });
     }
 
     render() {
         const { userName, password, isAdmin, isNameError, isPasswordError} = this.state;
         return (
             <div className='sign-in'>
-                <form >
                     <MyTextField 
                         className='col-4 col-s-4'
                         name='userName'
@@ -79,7 +74,6 @@ class SignIn extends Component {
                     <MyButton className='button' variant='contained' type='submit' color='secondary' onClick={this.handleSubmit} >
                         SIGN IN
                     </MyButton>
-                </form>
             </div>
         );
     }

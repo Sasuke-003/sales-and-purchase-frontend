@@ -37,9 +37,8 @@ class Purchase extends Component {
             id: Date.now()
         };
         cart.push(newItem);
-        this.setState({
-            cart: cart
-        });
+        this.setState({});
+        
     }
 
     deleteItem = (id) => {
@@ -49,21 +48,16 @@ class Purchase extends Component {
         })
     }
 
-    handleChange = (event, id) => {
+    handleChange = (event, index) => {
         const { cart } = this.state;
         const { name, value } = event.target;
-        cart.map((item) => {
-            if (item.id === id){
-                item[name] = value;
-            }
-            console.log(item.id);
-                console.log(id);
-        });
-        this.setState({
-            cart: cart
-        }, () => {
-            console.log(this.state)
-        })
+        // cart.map((item) => {
+        //     if (item.id === id){
+        //         item[name] = value;
+        //     }
+        // });
+        cart[index][name]=value;
+        this.setState({})
     }
 
 

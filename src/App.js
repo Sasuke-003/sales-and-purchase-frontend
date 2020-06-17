@@ -24,9 +24,9 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' render={() => !this.props.currentUser ? (<Redirect to='/signin' />) : (<BillingPage />) } /> 
           <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInPage />) } /> 
-          <Route exact path='/purchase' render={() => this.props.currentUser && this.props.currentUser.type === 'admin' ? 
+          <Route exact path='/purchase' render={() => this.props.currentUser && this.props.currentUser.userType === 'a' ? 
           (<PurchasePage />) : (<Redirect to='/' />) } /> 
-          <Route exact path='/stock' render={() => this.props.currentUser && this.props.currentUser.type === 'admin' ? 
+          <Route exact path='/stock' render={() => this.props.currentUser && this.props.currentUser.userType === 'a' ? 
           (<StockPage />) : (<Redirect to='/' />) } />  
         </Switch>
       </div>
