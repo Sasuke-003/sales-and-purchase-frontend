@@ -32,7 +32,11 @@ class SignIn extends Component {
 
     handleSubmit = () => {
         const { setCurrentUser } = this.props;
-        axios.post( 'http://localhost:9999/user/login', 
+       
+        // setCurrentUser({
+        //     userType:'a'
+        // });
+        axios.post( 'http://192.168.43.81:9999/user/login', 
                 {
                     Email: this.state.userName,
                     Password: this.state.password
@@ -54,6 +58,9 @@ class SignIn extends Component {
         const { userName, password, isAdmin, isNameError, isPasswordError} = this.state;
         return (
             <div className='sign-in'>
+            {
+                console.log(window.location.href)
+            }
                     <MyTextField 
                         className='col-4 col-s-4'
                         name='userName'

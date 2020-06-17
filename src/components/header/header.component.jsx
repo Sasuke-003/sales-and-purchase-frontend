@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../../assets/crown.svg'
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 import './header.styles.scss';
 import { connect } from 'react-redux'
 import { setCurrentUser } from '../../redux/user/user.actions'
