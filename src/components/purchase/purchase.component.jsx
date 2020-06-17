@@ -71,9 +71,7 @@ class Purchase extends Component {
                 ))
             }
             <MyFloatingButton onClick={this.addItem} />
-            <MyButton className='button' variant='contained' type='button' color='secondary' onClick={this.submitItem}  >
-                SUBMIT ITEM
-            </MyButton>
+            <MyFloatingButton onClick={this.submitItem} done/>
             </div>
         );
     }

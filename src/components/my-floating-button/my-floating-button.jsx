@@ -2,9 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import DoneIcon from '@material-ui/icons/Done';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +16,14 @@ const useStyles = makeStyles((theme) => ({
   fab: {
     margin: 0,
     top: 'auto',
+    left: 20,
+    bottom: 20,
+    right: 'auto',
+    position: 'fixed',
+  },
+  fabb: {
+    margin: 0,
+    top: 'auto',
     left: 'auto',
     bottom: 20,
     right: 20,
@@ -26,14 +32,22 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const MyFloatingButton = ({...otherProps}) => {
+const MyFloatingButton = ({done, ...otherProps}) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <Fab className={classes.fab} color="primary" aria-label="add" {...otherProps}>
-        <AddIcon />
-      </Fab>
+    {
+      done?
+        <Fab className={`${classes.fabb} ${classes.extendedIcon}`} variant='extended' color="primary"  {...otherProps}>
+          <DoneIcon />
+          Submit
+        </Fab>
+      :
+        <Fab className={classes.fab} color="primary" aria-label="add" {...otherProps}>
+          <AddIcon />
+        </Fab>
+    }
     </div>
   );
 

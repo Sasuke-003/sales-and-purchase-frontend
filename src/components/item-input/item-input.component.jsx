@@ -11,7 +11,7 @@ import './item-input.styles.css'
 
 const ItemTable = ({ data, handleChange, item, deleteItem, index }) => {
   return(
-    <div className='item'>
+    <div className='item' spacing={0}>
     <Grid container >
     <Grid item xs={12} sm={1} >
       <MyTypography className='item-heading' variant='h5'>{index+1}</MyTypography>

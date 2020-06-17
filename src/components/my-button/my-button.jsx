@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blue, grey } from '@material-ui/core/colors';
+import './my-button.styles.css'
 
 const MyButton = ({ children, color,...otherProps  }) => {
     const theme = createMuiTheme({
@@ -16,7 +17,7 @@ const MyButton = ({ children, color,...otherProps  }) => {
     return (
         <div>
         <ThemeProvider theme={theme}>
-            <Button color={color} {...otherProps}>
+            <Button className='button' color={color} {...otherProps}>
                 {children}
             </Button>
         </ThemeProvider>

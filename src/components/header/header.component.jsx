@@ -1,47 +1,71 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ReactComponent as Logo } from '../../assets/crown.svg'
 import { withRouter } from 'react-router-dom';
 import './header.styles.scss';
 import { connect } from 'react-redux'
 import { setCurrentUser } from '../../redux/user/user.actions'
-import MyButton from '../my-button/my-button'
 
-const Header = ({ currentUser, setCurrentUser, history, match }) => {
-    return (
-        <div className='header'>
-            <Link className='logo-container' to="/">
-                <Logo className='logo' />
-            </Link>
-            <div className='options'>
-                    {
-                        currentUser ?
-                            <MyButton className='option' color='primary' onClick={() => {setCurrentUser(null)}}>
-                                SIGN OUT
-                            </MyButton>
-                        :
-                            null
-                    }
-                    {
-                        currentUser && currentUser.userType === 'a' ?
-                            <Link className='option' to='/purchase'>
-                                PURCHASE
-                            </Link> 
-                        :
-                            null
-                    }
-                    {
-                        currentUser && currentUser.userType === 'a' ?
-                        <Link className='option' to='/stock'>
-                            STOCK
-                        </Link> 
-                        :
-                            null
-                    }
-                    
-            </div>
-        </div>
-    );
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import HomeIcon from '@material-ui/icons/Home';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
+
+const Header = (props) => {
+  const  { currentUser, setCurrentUser, history, match } = props;
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+    <AppBar position="static">
+    <Toolbar>
+      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+        <HomeIcon onClick={() => {history.push('/')}} />
+      </IconButton>
+      <Typography variant="h6" className={classes.title}>
+        
+      </Typography>
+    {
+        currentUser && currentUser.userType === 'a' ?
+            <Button color='inherit' className='option' onClick={() => {history.push('/purchase')}}>
+                PURCHASE
+            </Button> 
+        :
+            null
+    }
+    {
+        currentUser && currentUser.userType === 'a' ?
+        <Button color='inherit' className='option' onClick={() => {history.push('/stock')}}>
+            STOCK
+        </Button> 
+        :
+            null
+    }
+    {
+        currentUser ?
+            <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null)}}>
+                LOG OUT
+            </Button>
+        :
+            null
+        }
+    </Toolbar>
+  </AppBar>
+    </div>
+  );
 };
 
 const mapStatetoProps = state => ({
