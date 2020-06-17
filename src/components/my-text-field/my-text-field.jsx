@@ -25,7 +25,7 @@ const theme = createMuiTheme({
 // }));
 
 
-const MyTextField = ({ datalist, className, type, label ,...otherProps}) => {
+const MyTextField = ({ id, datalist, className, type, label ,...otherProps}) => {
 
     // const classes = useStyles();
 
@@ -85,7 +85,12 @@ const MyTextField = ({ datalist, className, type, label ,...otherProps}) => {
                 :
                     null
             }
-            <TextField className={className} label={label} type={type} inputProps={{list: 'datalist1'}} autoComplete={'off'} {...otherProps}  />
+            {
+                datalist?
+                <TextField className={className} label={label} type={type} inputProps={{list: 'datalist1'}} autoComplete={'off'} id={id} {...otherProps}  />    
+                :
+                <TextField className={className} label={label} type={type} autoComplete={'off'} id={id} {...otherProps}  />
+            }
             </div>
         }
       </ThemeProvider>

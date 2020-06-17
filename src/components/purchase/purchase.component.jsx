@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ItemTable from '../item-input/item-input.component';
 import MyButton from '../my-button/my-button';
 import Divider from '@material-ui/core/Divider';
+import MyFloatingButton from '../my-floating-button/my-floating-button'
 import './purchase.styles.css'
 
 class Purchase extends Component {
@@ -31,14 +32,10 @@ class Purchase extends Component {
     addItem = () => {
         const { cart } = this.state;
         const newItem = {
-            name:'',
-            quantity:0,
-            units:0,
             id: Date.now()
         };
         cart.push(newItem);
         this.setState({});
-        
     }
 
     deleteItem = (id) => {
@@ -48,18 +45,18 @@ class Purchase extends Component {
         })
     }
 
-    handleChange = (event, index) => {
-        const { cart } = this.state;
-        const { name, value } = event.target;
-        // cart.map((item) => {
-        //     if (item.id === id){
-        //         item[name] = value;
-        //     }
-        // });
-        cart[index][name]=value;
-        this.setState({})
+    handleChange = (event) => {
+        
     }
 
+    submitItem = () => {
+        const { cart } = this.state;
+        for(let i=0; i<cart.length;i++){
+            console.log(document.getElementById('name'+cart[i].id).value);
+            console.log(document.getElementById('quantity'+cart[i].id).value);
+            console.log(document.getElementById('units'+cart[i].id).value);
+        }
+    }
 
     render() {
         const { data, cart } = this.state;
@@ -73,8 +70,9 @@ class Purchase extends Component {
                     </div>
                 ))
             }
-            <MyButton className='button' variant='contained' type='button' color='secondary' onClick={this.addItem}  >
-                ADD ITEM
+            <MyFloatingButton onClick={this.addItem} />
+            <MyButton className='button' variant='contained' type='button' color='secondary' onClick={this.submitItem}  >
+                SUBMIT ITEM
             </MyButton>
             </div>
         );
