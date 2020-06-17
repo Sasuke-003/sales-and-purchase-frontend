@@ -25,7 +25,7 @@ const theme = createMuiTheme({
 // }));
 
 
-const MyTextField = ({ className, type, label ,...otherProps}) => {
+const MyTextField = ({ datalist, className, type, label ,...otherProps}) => {
 
     // const classes = useStyles();
 
@@ -52,6 +52,7 @@ const MyTextField = ({ className, type, label ,...otherProps}) => {
                     <Input
                         id="filled-adornment-password"
                         type={values.showPassword ? 'text' : 'password'}
+                        autoComplete={'off'}
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton
@@ -72,7 +73,19 @@ const MyTextField = ({ className, type, label ,...otherProps}) => {
                 </div>
             :
             <div className='text-field'>
-            <TextField className={className} label={label} type='text' {...otherProps}  />
+            {
+                datalist ? 
+                    <datalist id='datalist1'>
+                        {
+                            datalist.map((option, index) => (
+                                <option key={index} value={option} />
+                            ))
+                        }
+                    </datalist>
+                :
+                    null
+            }
+            <TextField className={className} label={label} type={type} inputProps={{list: 'datalist1'}} autoComplete={'off'} {...otherProps}  />
             </div>
         }
       </ThemeProvider>

@@ -29,18 +29,19 @@ class SignIn extends Component {
             this.setState({ [name]: value})
     }
 
-    handleSubmit = event => {
+    handleSubmit = () => {
         const { setCurrentUser } = this.props;
-        event.preventDefault();
-        
-        // axios.get('')
-        // .then(res => {
-        //     console.log(res.data);
-        // })
-        // .catch(function (error){
-        //     console.log(error);
-        // })
-
+        console.log('aefad')
+        axios.post('http://localhost:9999/user/login', {
+            Email: this.state.userName,
+            Password: this.state.password
+          },)
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         if(!this.state.isPasswordError && !this.state.isNameError){
         setCurrentUser({
             type: 'admin',
@@ -57,7 +58,7 @@ class SignIn extends Component {
         const { userName, password, isAdmin, isNameError, isPasswordError} = this.state;
         return (
             <div className='sign-in'>
-                <form onSubmit={this.handleSubmit}>
+                <form >
                     <MyTextField 
                         className='col-4 col-s-4'
                         name='userName'
@@ -75,7 +76,7 @@ class SignIn extends Component {
                         label='PASSWORD'
                         error = {isPasswordError}
                     />
-                    <MyButton className='button' variant='contained' type='submit' color='secondary' >
+                    <MyButton className='button' variant='contained' type='submit' color='secondary' onClick={this.handleSubmit} >
                         SIGN IN
                     </MyButton>
                 </form>
