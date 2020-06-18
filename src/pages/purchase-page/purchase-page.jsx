@@ -4,7 +4,7 @@ import './purchase-page.styles.css'
 
 const PurchasePage = () => {
     return (
-        <div>
+        <div className='container'>
             <h2>PURCHASE ITEMS</h2>
             <Purchase />
         </div>

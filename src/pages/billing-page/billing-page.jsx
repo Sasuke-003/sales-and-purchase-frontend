@@ -1,9 +1,10 @@
 import React from 'react';
+import './billing-page.styles.css'
 
 const BillingPage = () => {
     return (
-        <div>
-            billing
+        <div className='container'>
+            <h2>BILLING</h2>
         </div>
     );
 };

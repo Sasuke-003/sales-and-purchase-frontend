@@ -17,7 +17,8 @@ class SignIn extends Component {
         this.state = {
             userName: '',
             password: '',
-            isPasswordError: false
+            isPasswordError: false,
+            helperText:''
         }
 
     }
@@ -41,26 +42,30 @@ class SignIn extends Component {
                     Email: this.state.userName,
                     Password: this.state.password
                 }
+                
             )
             .then((res) => {
                 console.log(res);
                 setCurrentUser(res.data.data);
+                this.setState({
+                    isPasswordError: false,
+                    helperText:''
+                })
             })
             .catch((error) => {
                 console.log(error.response.data);
                 this.setState({
                     password: '',
+                    isPasswordError: true
                 })
+
             });
     }
 
     render() {
-        const { userName, password, isAdmin, isNameError, isPasswordError} = this.state;
+        const { userName, password, isPasswordError} = this.state;
         return (
             <div className='sign-in'>
-            {
-                console.log(window.location.href)
-            }
                     <MyTextField 
                         className='col-4 col-s-4'
                         name='userName'

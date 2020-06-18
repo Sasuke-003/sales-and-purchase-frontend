@@ -24,16 +24,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Header = (props) => {
-  const  { currentUser, setCurrentUser, history, match } = props;
+const Header = ({ currentUser, setCurrentUser, history}) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-    <AppBar position="static">
+    <AppBar position='fixed'>
     <Toolbar>
-      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-        <HomeIcon onClick={() => {history.push('/')}} />
+      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => {history.push('/')}} >
+        <HomeIcon />
       </IconButton>
       <Typography variant="h6" className={classes.title}>
         

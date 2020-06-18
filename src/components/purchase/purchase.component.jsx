@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ItemTable from '../item-input/item-input.component';
-import MyButton from '../my-button/my-button';
 import Divider from '@material-ui/core/Divider';
 import MyFloatingButton from '../my-floating-button/my-floating-button'
 import './purchase.styles.css'
@@ -32,6 +31,7 @@ class Purchase extends Component {
     addItem = () => {
         const { cart } = this.state;
         const newItem = {
+            units: '',
             id: Date.now()
         };
         cart.push(newItem);
@@ -45,8 +45,10 @@ class Purchase extends Component {
         })
     }
 
-    handleChange = (event) => {
-        
+    handleChange = (event, index) => {
+        const { cart } = this.state;
+        cart[index]['units'] = event.target.value;
+        this.setState({});
     }
 
     submitItem = () => {
@@ -54,7 +56,7 @@ class Purchase extends Component {
         for(let i=0; i<cart.length;i++){
             console.log(document.getElementById('name'+cart[i].id).value);
             console.log(document.getElementById('quantity'+cart[i].id).value);
-            console.log(document.getElementById('units'+cart[i].id).value);
+            console.log(cart[i]['units']);
         }
     }
 
@@ -65,7 +67,7 @@ class Purchase extends Component {
             {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
-                        <ItemTable data={data} item={item}  handleChange={this.handleChange} deleteItem={this.deleteItem} index={index} /> 
+                        <ItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} /> 
                         <Divider /> 
                     </div>
                 ))

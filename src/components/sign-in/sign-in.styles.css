@@ -1,5 +1,5 @@
 .sign-in {
-    margin-top: 60%;
+    margin-top: 50%;
 }
 
 .button {
@@ -9,7 +9,7 @@
 @media only screen and (min-width: 768px) {
 /* for desktop  */
 .sign-in {
-    margin-top: 20%;
+    margin-top: 25%;
 }
 .button {
     width: 20%;

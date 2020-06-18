@@ -9,9 +9,6 @@ import SignInPage from './pages/sign-in-page/sign-in-page';
 import PurchasePage from './pages/purchase-page/purchase-page'
 import StockPage from './pages/stock-page/stock-page'
 
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-
 
 class App extends React.Component {
   
