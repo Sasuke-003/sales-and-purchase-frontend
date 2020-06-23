@@ -55,12 +55,20 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
     }
     {
         currentUser ?
-            <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null)}}>
-                LOG OUT
+        <Button color='inherit' className='option' onClick={() => {history.push('/signup')}}>
+                SIGN UP
             </Button>
         :
             null
         }
+        {
+          currentUser ?
+              <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null)}}>
+                  LOG OUT
+              </Button>
+          :
+              null
+          }
     </Toolbar>
   </AppBar>
     </div>

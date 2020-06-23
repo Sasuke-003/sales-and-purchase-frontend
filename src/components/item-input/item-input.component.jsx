@@ -32,7 +32,7 @@ const ItemTable = ({ data, item, deleteItem, index, handleChange }) => {
   return(
     <div className='item' >
     <Grid container spacing={1} tent={'center'} justify={'center'}>
-    <Grid item xs={12} sm={1} justify='center' alignContent='center' >
+    <Grid item xs={12} sm={1}  >
     <div className='item-heading'><MyTypography className='item-heading' variant='h4'>{index+1}</MyTypography></div>
     </Grid>
     <Grid item xs={10} sm={4} >

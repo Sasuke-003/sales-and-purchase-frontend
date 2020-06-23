@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import ItemTable from '../item-input/item-input.component';
 import Divider from '@material-ui/core/Divider';
 import MyFloatingButton from '../my-floating-button/my-floating-button'
-import axios from 'axios';
-import './purchase.styles.css'
 
-class Purchase extends Component {
+class Billing extends Component {
     constructor(props) {
         super(props);
         
@@ -58,25 +56,8 @@ class Purchase extends Component {
             console.log(document.getElementById('name'+cart[i].id).value);
             console.log(document.getElementById('quantity'+cart[i].id).value);
             console.log(cart[i]['units']);
-            axios.post( 'http://192.168.43.81:9999/item/add',
-            {
-                Name: document.getElementById('name'+cart[i].id).value,
-                Unit: cart[i]['units'],
-                Qty: document.getElementById('quantity'+cart[i].id).value
-            }
-            
-            )
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((error) => {
-                console.log(error.response.data);
-            });
         }
-        }
-
-
-       
+    }
 
     render() {
         const { data, cart } = this.state;
@@ -97,4 +78,4 @@ class Purchase extends Component {
     }
 }
 
-export default Purchase;
+export default Billing;

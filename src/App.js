@@ -8,6 +8,7 @@ import Header from './components/header/header.component'
 import SignInPage from './pages/sign-in-page/sign-in-page';
 import PurchasePage from './pages/purchase-page/purchase-page'
 import StockPage from './pages/stock-page/stock-page'
+import SignUpPage from './pages/sign-up-page/sign-up-page';
 
 
 class App extends React.Component {
@@ -23,7 +24,9 @@ class App extends React.Component {
         <Route exact path='/purchase' render={() => this.props.currentUser && this.props.currentUser.userType === 'a' ? 
         (<PurchasePage />) : (<Redirect to='/' />) } /> 
         <Route exact path='/stock' render={() => this.props.currentUser && this.props.currentUser.userType === 'a' ? 
-        (<StockPage />) : (<Redirect to='/' />) } />  
+        (<StockPage />) : (<Redirect to='/' />) } />
+        <Route exact path='/signup' render={() => this.props.currentUser && this.props.currentUser.userType === 'a' ? 
+        (<SignUpPage />) : (<Redirect to='/' />) } />  
       </Switch>
       </div>
     );

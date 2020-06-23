@@ -1,0 +1,17 @@
+.sign-up {
+    margin-top: 20%;
+}
+
+.button {
+    width: 50%;
+}
+
+@media only screen and (min-width: 768px) {
+/* for desktop  */
+.sign-up {
+    margin-top: 10%;
+}
+.button {
+    width: 20%;
+}
+}
