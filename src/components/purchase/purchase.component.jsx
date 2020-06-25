@@ -55,7 +55,7 @@ class Purchase extends Component {
             console.log(document.getElementById('name'+cart[i].id).value);
             console.log(document.getElementById('quantity'+cart[i].id).value);
             console.log(cart[i]['units']);
-            axios.post( 'http://192.168.43.81:9999/item/add',
+            axios.post( 'http://localhost:9999/item/add',
             {
                 Name: document.getElementById('name'+cart[i].id).value,
                 Unit: cart[i]['units'],

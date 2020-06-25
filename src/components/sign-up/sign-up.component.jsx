@@ -63,7 +63,7 @@ class SignUp extends Component {
         }
         console.log(data);
 
-        axios.post( 'http://192.168.43.81:9999/user/signup', data, config)
+        axios.post( 'http://localhost:9999/user/signup', data, config)
             .then((res) => {
                 console.log(res);
             
