@@ -6,6 +6,7 @@ import MyTextField from '../my-text-field/my-text-field';
 import MyButton from '../my-button/my-button';
 import { connect } from 'react-redux'
 import './sign-up.styles.css'
+import MyCheckBox from '../my-check-box/my-check-box';
 
 
 
@@ -20,7 +21,7 @@ class SignUp extends Component {
             password: '',
             rePassword: '',
             email: '',
-            type: '',
+            isAdmin: false,
             isPasswordError: false,
             helperText: ''
         }
@@ -58,8 +59,9 @@ class SignUp extends Component {
             FullName: this.state.fullName,
             Email: this.state.email,
             Password: this.state.password,
-            Type: this.state.type
+            Type: this.state.isAdmin ? 'a' : 'e'
         }
+        console.log(data);
 
         axios.post( 'http://192.168.43.81:9999/user/signup', data, config)
             .then((res) => {
@@ -71,6 +73,13 @@ class SignUp extends Component {
 
 
             });
+    }
+
+    handleCheckBoxChange = (event) => {
+        this.setState({
+            isAdmin: event.target.checked
+        });
+        console.log(event.target.checked)
     }
 
     render() {
@@ -112,6 +121,7 @@ class SignUp extends Component {
                         helperText={helperText}
                         error={isPasswordError}
                     />
+                    <MyCheckBox label='ADMIN' checked={type} onChange={this.handleCheckBoxChange} name='isAdmin' />
                     <MyButton className='button' variant='contained' type='submit' color='secondary'>
                         SIGN UP
                     </MyButton>

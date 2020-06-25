@@ -13,6 +13,9 @@ import './item-input.styles.css'
 
 
 const ItemTable = ({ data, item, deleteItem, index, handleChange }) => {
+
+
+
   const currencies = [
     {
       value: 'kg',
@@ -72,7 +75,7 @@ const ItemTable = ({ data, item, deleteItem, index, handleChange }) => {
       </TextField>
       </Grid>
       <Grid item xs={12} sm={1}>
-      <IconButton  aria-label="delete" onClick={() => deleteItem(item.id)} >
+      <IconButton  aria-label="delete" onClick={() => deleteItem(item.id, index)} >
           <DeleteIcon fontSize="large" />
       </IconButton>
       </Grid>

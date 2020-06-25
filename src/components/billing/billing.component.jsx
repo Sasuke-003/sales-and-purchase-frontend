@@ -8,14 +8,7 @@ class Billing extends Component {
         super(props);
         
         this.state={
-            data : [  
-                'india',
-                'usa',
-                'canada',
-                'germany',
-                'england',
-                'russia'
-            ],
+            data : [ ],
 
             cart : [ ]
         }
@@ -28,19 +21,23 @@ class Billing extends Component {
 
 
     addItem = () => {
-        const { cart } = this.state;
+        const { cart, data } = this.state;
         const newItem = {
             units: '',
             id: Date.now()
         };
+        const newData = ['india', 'france', 'japan'];
         cart.push(newItem);
+        data.push(newData);
         this.setState({});
     }
 
-    deleteItem = (id) => {
+    deleteItem = (id, i) => {
         const newCart = this.state.cart.filter((item) => item.id !== id);
+        const newData = this.state.data.filter((item, index) => index !== i);
         this.setState({
-            cart: newCart
+            cart: newCart,
+            data: newData
         })
     }
 
@@ -66,7 +63,7 @@ class Billing extends Component {
             {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
-                        <ItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} /> 
+                        <ItemTable data={data[index]} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} /> 
                         <Divider /> 
                     </div>
                 ))

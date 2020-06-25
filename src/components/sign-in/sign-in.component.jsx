@@ -47,10 +47,6 @@ class SignIn extends Component {
             .then((res) => {
                 console.log(res);
                 setCurrentUser(res.data.data);
-                this.setState({
-                    isPasswordError: false,
-                    helperText:''
-                })
             })
             .catch((error) => {
                 console.log(error.response.data);
