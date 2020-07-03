@@ -5,6 +5,7 @@ import { setCurrentUser } from '../../redux/user/user.actions';
 
 import MyTextField from '../my-text-field/my-text-field';
 import MyButton from '../my-button/my-button';
+import MyPasswordField from '../my-password-field/my-password-field'
 
 import './sign-in.styles.css';
 
@@ -70,7 +71,7 @@ class SignIn extends Component {
                         value={userName}
                         label='USERNAME'
                     />
-                    <MyTextField 
+                    <MyPasswordField 
                         className='col-4 col-s-4'
                         name="password" 
                         type="password" 

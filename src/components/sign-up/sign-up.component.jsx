@@ -7,6 +7,7 @@ import MyButton from '../my-button/my-button';
 import { connect } from 'react-redux'
 import './sign-up.styles.css'
 import MyCheckBox from '../my-check-box/my-check-box';
+import MyPasswordField from '../my-password-field/my-password-field'
 
 
 
@@ -17,35 +18,25 @@ class SignUp extends Component {
         super(props);
         
         this.state = {
-            fullName: '',
-            password: '',
-            rePassword: '',
-            email: '',
             isAdmin: false,
             isPasswordError: false,
             helperText: ''
-        }
+        };
 
     }
     handleChange = event => {
-        const {value, name} = event.target;
-        this.setState({ [name]: value}, () =>
-            {
-                if (name==='rePassword' || name === 'password'){
-                    if(this.state.password !== this.state.rePassword){
-                        this.setState({
-                            isPasswordError: true,
-                            helperText: 'Password does not match'
-                        });
-                    }
-                    else {
-                      this.setState({
-                          isPasswordError: false,
-                          helperText: ''
-                      });
-                    }  
-                  }
-            });
+        const password = document.getElementById('filled-adornment-password').value;
+        const rePassword = document.getElementById('rePassword').value;
+        let error = false;
+        let text = ''
+        if(password !== rePassword){
+                error = true;
+                text = 'Password does not match';
+        }
+        this.setState({
+                isPasswordError: error,
+                helperText: text
+        });
     }
 
     handleSubmit = (event) => {
@@ -54,25 +45,25 @@ class SignUp extends Component {
             headers: {
               Authorization: this.props.currentUser.userToken,
             }
-          }
+        }
         const data = {
-            FullName: this.state.fullName,
-            Email: this.state.email,
-            Password: this.state.password,
+            FullName: document.getElementById('fullName').value,
+            Email: document.getElementById('email').value,
+            Password: document.getElementById('filled-adornment-password').value,
             Type: this.state.isAdmin ? 'a' : 'e'
         }
-        console.log(data);
-
-        axios.post( 'http://localhost:9999/user/signup', data, config)
+        if (!this.state.isPasswordError){
+            axios.post( 'http://localhost:9999/user/signup', data, config)
             .then((res) => {
-                console.log(res);
-            
+                console.log(res);      
             })
             .catch((error) => {
                 console.log(error.response.data);
-
-
             });
+        }
+        else{
+            alert('password does not match')
+        }
     }
 
     handleCheckBoxChange = (event) => {
@@ -82,46 +73,46 @@ class SignUp extends Component {
         console.log(event.target.checked)
     }
 
+    shouldComponentUpdate( nextProps,nextState) {
+        if(nextState === this.state)
+            return false
+        return true
+    }
+
     render() {
-        const { fullName, password, email, type, rePassword, isPasswordError, helperText } = this.state;
+        const { isAdmin, isPasswordError, helperText  } = this.state;
         return (
             <div className='sign-up'>
             <form onSubmit={this.handleSubmit} >
                     <MyTextField 
                         className='col-4 col-s-4'
-                        name='fullName'
+                        id='fullName'
                         type='text'
-                        onChange={this.handleChange}
-                        value={fullName}
                         label='FULL NAME'
                     />
                     <MyTextField 
                         className='col-4 col-s-4'
-                        name='email'
+                        id='email'
                         type='email'
-                        onChange={this.handleChange}
-                        value={email}
                         label='EMAIL'
                     />
-                    <MyTextField 
+                     <MyPasswordField 
                         className='col-4 col-s-4'
-                        name="password" 
+                        name='password' 
                         type="password" 
                         onChange={this.handleChange} 
-                        value={password} 
                         label='PASSWORD'
                     />
                     <MyTextField 
                         className='col-4 col-s-4'
-                        name='rePassword'
+                        id='rePassword'
                         type='text'
                         onChange={this.handleChange}
-                        value={rePassword}
                         label='RE-ENTER-PASSWORD'
                         helperText={helperText}
                         error={isPasswordError}
                     />
-                    <MyCheckBox label='ADMIN' checked={type} onChange={this.handleCheckBoxChange} name='isAdmin' />
+                    <MyCheckBox label='ADMIN' checked={isAdmin} onChange={this.handleCheckBoxChange} name='isAdmin' />
                     <MyButton className='button' variant='contained' type='submit' color='secondary'>
                         SIGN UP
                     </MyButton>
