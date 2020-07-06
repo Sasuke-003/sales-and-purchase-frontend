@@ -27,22 +27,16 @@ class MyTextField extends React.Component  {
     handleClickShowPassword = () => {
         this.setState((prevState, props) => ({
             showPassword: !prevState.showPassword
-        }))
+        }));
     };
     
     handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
 
-
-    shouldComponentUpdate( nextProps,nextState) {
-        if(nextProps === this.props)
-            return false
-        return true
-    }
-
     render(){
         const { name, id, datalist, className, type, label ,...otherProps } = this.props;
+        const { showPassword } = this.state;
         return (  
             <ThemeProvider theme={theme}>
                     <div className='password-field'>
@@ -51,7 +45,7 @@ class MyTextField extends React.Component  {
                             <Input
                                 name= {name}
                                 id="filled-adornment-password"
-                                type={this.state.showPassword ? 'text' : 'password'}
+                                type={showPassword ? 'text' : 'password'}
                                 autoComplete={'off'}
                                 endAdornment={
                                     <InputAdornment position="end">
@@ -61,7 +55,7 @@ class MyTextField extends React.Component  {
                                             onMouseDown={this.handleMouseDownPassword}
                                             edge="end"
                                         >
-                                            {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
                                         </IconButton>
                                 </InputAdornment>
                                 }

@@ -33,6 +33,10 @@ class SignUp extends Component {
                 error = true;
                 text = 'Password does not match';
         }
+        else if (password.length < 8){
+            error = true;
+            text = 'Password must contain 8 or more characters';
+        }
         this.setState({
                 isPasswordError: error,
                 helperText: text
@@ -43,7 +47,7 @@ class SignUp extends Component {
         event.preventDefault();
         const config = {
             headers: {
-              Authorization: this.props.currentUser.userToken,
+              'Authorization': this.props.currentUser.userToken,
             }
         }
         const data = {
