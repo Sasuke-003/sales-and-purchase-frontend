@@ -37,29 +37,29 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
       <Typography variant="h6" className={classes.title}>
         
       </Typography>
-    {
-        currentUser && currentUser.userType === 'a' ?
-            <Button color='inherit' className='option' onClick={() => {history.push('/purchase')}}>
-                PURCHASE
+        {
+            currentUser && currentUser.userType === 'a' ?
+                <Button color='inherit' className='option' onClick={() => {history.push('/purchase')}}>
+                    PURCHASE
+                </Button> 
+            :
+                null
+        }
+        {
+            currentUser && currentUser.userType === 'a' ?
+            <Button color='inherit' className='option' onClick={() => {history.push('/stock')}}>
+                STOCK
             </Button> 
-        :
-            null
-    }
-    {
-        currentUser && currentUser.userType === 'a' ?
-        <Button color='inherit' className='option' onClick={() => {history.push('/stock')}}>
-            STOCK
-        </Button> 
-        :
-            null
-    }
-    {
-        currentUser ?
-        <Button color='inherit' className='option' onClick={() => {history.push('/signup')}}>
-                SIGN UP
-            </Button>
-        :
-            null
+            :
+                null
+        }
+        {
+          currentUser && currentUser.userType === 'a' ?
+            <Button color='inherit' className='option' onClick={() => {history.push('/signup')}}>
+                    SIGN UP
+                </Button>
+            :
+                null
         }
         {
           currentUser ?

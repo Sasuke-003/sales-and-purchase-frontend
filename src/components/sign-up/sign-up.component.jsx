@@ -59,10 +59,10 @@ class SignUp extends Component {
         if (!this.state.isPasswordError){
             axios.post( 'http://localhost:9999/user/signup', data, config)
             .then((res) => {
-                console.log(res);      
+                alert("sucessfully Registered")      
             })
             .catch((error) => {
-                console.log(error.response.data);
+                alert(error.response.data.info)
             });
         }
         else{
