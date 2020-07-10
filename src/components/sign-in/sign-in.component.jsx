@@ -9,7 +9,7 @@ import MyPasswordField from '../my-password-field/my-password-field'
 
 import './sign-in.styles.css';
 
-
+const validate = require( './sign-in.validator.js' ) ;
 
 class SignIn extends Component {
     constructor(props) {
@@ -32,31 +32,34 @@ class SignIn extends Component {
             this.setState({ [name]: value})
     }
 
-    handleSubmit = () => {
+    handleSubmit = async () => {
         const { setCurrentUser } = this.props;
        
         // setCurrentUser({
         //     userType:'a'
         // });
-        axios.post( 'http://localhost:9999/user/login', 
-                {
-                    Email: this.state.userName,
-                    Password: this.state.password
-                }
-                
-            )
-            .then((res) => {
-                console.log(res);
-                setCurrentUser(res.data.data);
-            })
-            .catch((error) => {
-                console.log(error.response.data);
-                this.setState({
-                    password: '',
-                    isPasswordError: true
+        const signinData = {
+            Email: this.state.userName,
+            Password: this.state.password
+        }
+        try {
+            await validate.signin( signinData ) ;
+            axios.post( 'http://192.168.225.4:9999/user/login', signinData )
+                .then((res) => {
+                    console.log(res);
+                    setCurrentUser(res.data.data);
                 })
+                .catch((error) => {
+                    console.log(error.response.data);
+                    this.setState({
+                        password: '',
+                        isPasswordError: true
+                    })
 
-            });
+                });
+        } catch( err ) {
+            console.log( err ) ;
+        }
     }
 
     render() {
