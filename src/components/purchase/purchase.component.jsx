@@ -48,6 +48,10 @@ class Purchase extends Component {
         cart[index]['units'] = event.target.value;
         this.setState({});
     }
+    handleItemChange = id => {
+       const searchData = document.getElementById('name'+id).value;
+      
+    }
 
     submitItem = () => {
         const { cart } = this.state;
@@ -82,7 +86,9 @@ class Purchase extends Component {
             {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
-                        <ItemTable data={data[index]} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} /> 
+                        <ItemTable data={data[index]} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} 
+                        handleItemChange= {this.handleItemChange}
+                        /> 
                         <Divider /> 
                     </div>
                 ))

@@ -31,7 +31,7 @@ class SignIn extends Component {
         else
             this.setState({ [name]: value})
     }
-
+   
     handleSubmit = async () => {
         const { setCurrentUser } = this.props;
        
@@ -44,13 +44,11 @@ class SignIn extends Component {
         }
         try {
             await validate.signin( signinData ) ;
-            axios.post( 'http://192.168.225.4:9999/user/login', signinData )
+            axios.post( 'http://localhost:9999/user/login', signinData )
                 .then((res) => {
-                    console.log(res);
                     setCurrentUser(res.data.data);
                 })
                 .catch((error) => {
-                    console.log(error.response.data);
                     this.setState({
                         password: '',
                         isPasswordError: true
@@ -58,7 +56,7 @@ class SignIn extends Component {
 
                 });
         } catch( err ) {
-            console.log( err ) ;
+            alert( err ) ;
         }
     }
 

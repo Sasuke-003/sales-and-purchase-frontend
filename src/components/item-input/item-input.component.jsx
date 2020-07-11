@@ -12,7 +12,7 @@ import './item-input.styles.css'
 
 
 
-const ItemTable = ({ data, item, deleteItem, index, handleChange }) => {
+const ItemTable = ({ data, item, deleteItem, index, handleChange,  handleItemChange }) => {
 
 
 
@@ -44,6 +44,7 @@ const ItemTable = ({ data, item, deleteItem, index, handleChange }) => {
         id={'name'+item.id}
         type='text'
         label='NAME'
+        onChange={() => handleItemChange(item.id)}
         datalist={data}
         fullWidth
       />
