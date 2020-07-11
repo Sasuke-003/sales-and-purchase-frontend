@@ -3,10 +3,12 @@ import ItemTable from '../item-input/item-input.component';
 import Divider from '@material-ui/core/Divider';
 import MyFloatingButton from '../my-floating-button/my-floating-button'
 import axios from 'axios';
+import { connect } from 'react-redux'
 import './purchase.styles.css'
 
 let timerID ;
 const timeOutValue = 750 ;
+let s = new Set();
 
 class Purchase extends Component {
     constructor(props) {
@@ -17,7 +19,6 @@ class Purchase extends Component {
 
             cart : [ ]
         }
-
     }
     
     componentDidMount(){
@@ -26,14 +27,12 @@ class Purchase extends Component {
 
 
     addItem = () => {
-        const { cart, data } = this.state;
+        const { cart } = this.state;
         const newItem = {
             units: '',
             id: Date.now()
         };
-        const newData = ['india', 'france', 'japan'];
         cart.push(newItem);
-        data.push(newData);
         this.setState({});
     }
 
@@ -55,8 +54,30 @@ class Purchase extends Component {
        if ( timerID ) clearTimeout( timerID ) ;
        timerID = setTimeout( ( reqFunction ) =>{
            timerID = undefined ;
-           const searchData = document.getElementById('name'+id).value;
-           // send request
+           const config = {
+            headers: {
+              'Authorization': this.props.currentUser.userToken,
+            }
+        }
+           const searchword = document.getElementById('name'+id).value;
+           console.log('http://localhost:9999/item?s='+searchword)
+           axios.get('http://localhost:9999/item?s='+searchword, config).then(
+               (res) => {
+                const { data } = this.state;
+                for(let i=0; i<res.data.data.length; i++){
+                    if(!s.has(res.data.data[i].Name)){
+                        data.push(res.data.data[i].Name);
+                        s.add(res.data.data[i].Name);
+                        console.log(res.data.data[i].Name);
+                    }
+                }
+                this.setState({})
+            }
+
+           ).catch((error) => {
+            
+                console.log(error)
+        })
 
        } , timeOutValue ) ;
     }
@@ -94,7 +115,7 @@ class Purchase extends Component {
             {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
-                        <ItemTable data={data[index]} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} 
+                        <ItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} 
                         handleItemChange= {this.handleItemChange}
                         /> 
                         <Divider /> 
@@ -108,4 +129,9 @@ class Purchase extends Component {
     }
 }
 
-export default Purchase;
+const mapStatetoProps = state => ({
+    currentUser: state.user.currentUser
+});
+
+
+export default connect(mapStatetoProps)(Purchase);
