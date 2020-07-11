@@ -15,8 +15,7 @@ class Purchase extends Component {
         super(props);
         
         this.state={
-            data : [  ],
-
+            data : [ ],
             cart : [ ]
         }
     }
@@ -52,7 +51,7 @@ class Purchase extends Component {
     }
     handleItemChange = id => {
        if ( timerID ) clearTimeout( timerID ) ;
-       timerID = setTimeout( ( reqFunction ) =>{
+       timerID = setTimeout( () =>{
            timerID = undefined ;
            const config = {
             headers: {
@@ -60,7 +59,6 @@ class Purchase extends Component {
             }
         }
            const searchword = document.getElementById('name'+id).value;
-           console.log('http://localhost:9999/item?s='+searchword)
            axios.get('http://localhost:9999/item?s='+searchword, config).then(
                (res) => {
                 const { data } = this.state;
@@ -68,7 +66,6 @@ class Purchase extends Component {
                     if(!s.has(res.data.data[i].Name)){
                         data.push(res.data.data[i].Name);
                         s.add(res.data.data[i].Name);
-                        console.log(res.data.data[i].Name);
                     }
                 }
                 this.setState({})

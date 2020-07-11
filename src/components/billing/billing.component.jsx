@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import ItemTable from '../item-input/item-input.component';
 import Divider from '@material-ui/core/Divider';
-import MyFloatingButton from '../my-floating-button/my-floating-button'
+import MyFloatingButton from '../my-floating-button/my-floating-button';
+import axios from 'axios';
+import { connect } from 'react-redux'
+
+
+
+let timerID ;
+const timeOutValue = 500 ;
+let s = new Set();
 
 class Billing extends Component {
     constructor(props) {
@@ -21,14 +29,12 @@ class Billing extends Component {
 
 
     addItem = () => {
-        const { cart, data } = this.state;
+        const { cart } = this.state;
         const newItem = {
             units: '',
             id: Date.now()
         };
-        const newData = ['india', 'france', 'japan'];
         cart.push(newItem);
-        data.push(newData);
         this.setState({});
     }
 
@@ -56,6 +62,36 @@ class Billing extends Component {
         }
     }
 
+    handleItemChange = id => {
+        if ( timerID ) clearTimeout( timerID ) ;
+        timerID = setTimeout( () =>{
+            timerID = undefined ;
+            const config = {
+             headers: {
+               'Authorization': this.props.currentUser.userToken,
+             }
+         }
+            const searchword = document.getElementById('name'+id).value;
+            axios.get('http://localhost:9999/item?s='+searchword, config).then(
+                (res) => {
+                 const { data } = this.state;
+                 for(let i=0; i<res.data.data.length; i++){
+                     if(!s.has(res.data.data[i].Name)){
+                         data.push(res.data.data[i].Name);
+                         s.add(res.data.data[i].Name);
+                     }
+                 }
+                 this.setState({})
+             }
+ 
+            ).catch((error) => {
+             
+                 console.log(error)
+         })
+ 
+        } , timeOutValue ) ;
+     }
+
     render() {
         const { data, cart } = this.state;
         return (
@@ -63,7 +99,9 @@ class Billing extends Component {
             {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
-                        <ItemTable data={data[index]} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange} /> 
+                        <ItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
+                        handleItemChange={this.handleItemChange}
+                         /> 
                         <Divider /> 
                     </div>
                 ))
@@ -75,4 +113,9 @@ class Billing extends Component {
     }
 }
 
-export default Billing;
+const mapStatetoProps = state => ({
+    currentUser: state.user.currentUser
+});
+
+
+export default connect(mapStatetoProps)(Billing);
