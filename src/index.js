@@ -1,4 +1,5 @@
-import './validation.js'
+import './validator.js'
+import './axios.config.js' 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

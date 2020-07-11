@@ -9,15 +9,13 @@ import MyPasswordField from '../my-password-field/my-password-field'
 
 import './sign-in.styles.css';
 
-const validate = require( './sign-in.validator.js' ) ;
-
 class SignIn extends Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            userName: '',
-            password: '',
+            userName: 'a',
+            password: 'a',
             isPasswordError: false,
             helperText:''
         }
@@ -34,30 +32,21 @@ class SignIn extends Component {
    
     handleSubmit = async () => {
         const { setCurrentUser } = this.props;
-       
-        // setCurrentUser({
-        //     userType:'a'
-        // });
+
         const signinData = {
             Email: this.state.userName,
             Password: this.state.password
         }
-        try {
-            await validate.signin( signinData ) ;
-            axios.post( 'http://localhost:9999/user/login', signinData )
-                .then((res) => {
-                    setCurrentUser(res.data.data);
+        axios.post ( '/user/login', signinData )
+            .then  ( data => {
+                setCurrentUser( data ) ;
+            })
+            .catch ( error => {
+                this.setState({
+                    password: '',
+                    isPasswordError: true
                 })
-                .catch((error) => {
-                    this.setState({
-                        password: '',
-                        isPasswordError: true
-                    })
-
-                });
-        } catch( err ) {
-            alert( err ) ;
-        }
+            });
     }
 
     render() {

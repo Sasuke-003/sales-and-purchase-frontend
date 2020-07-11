@@ -33,10 +33,6 @@ class SignUp extends Component {
                 error = true;
                 text = 'Password does not match';
         }
-        else if (password.length < 8){
-            error = true;
-            text = 'Password must contain 8 or more characters';
-        }
         this.setState({
                 isPasswordError: error,
                 helperText: text
@@ -45,28 +41,23 @@ class SignUp extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const config = {
-            headers: {
-              'Authorization': this.props.currentUser.userToken,
-            }
-        }
-        const data = {
+        const SignupData = {
             FullName: document.getElementById('fullName').value,
             Email: document.getElementById('email').value,
             Password: document.getElementById('filled-adornment-password').value,
             Type: this.state.isAdmin ? 'a' : 'e'
         }
         if (!this.state.isPasswordError){
-            axios.post( 'http://localhost:9999/user/signup', data, config)
+            axios.post( '/user/signup', SignupData)
             .then((res) => {
-                alert("sucessfully Registered")      
+                alert("successfully Registered")      
             })
             .catch((error) => {
-                alert(error.response.data.info)
+                console.log('gone')
             });
         }
         else{
-            alert('password does not match')
+            // alert('password does not match')
         }
     }
 
