@@ -5,6 +5,9 @@ import MyFloatingButton from '../my-floating-button/my-floating-button'
 import axios from 'axios';
 import './purchase.styles.css'
 
+let timerID ;
+const timeOutValue = 750 ;
+
 class Purchase extends Component {
     constructor(props) {
         super(props);
@@ -49,8 +52,13 @@ class Purchase extends Component {
         this.setState({});
     }
     handleItemChange = id => {
-       const searchData = document.getElementById('name'+id).value;
-      
+       if ( timerID ) clearTimeout( timerID ) ;
+       timerID = setTimeout( ( reqFunction ) =>{
+           timerID = undefined ;
+           const searchData = document.getElementById('name'+id).value;
+           // send request
+
+       } , timeOutValue ) ;
     }
 
     submitItem = () => {
