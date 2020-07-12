@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
+import { myStopFunction } from '../../axios.config';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,7 +64,7 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
         }
         {
           currentUser ?
-              <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null)}}>
+              <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); myStopFunction();}}>
                   LOG OUT
               </Button>
           :

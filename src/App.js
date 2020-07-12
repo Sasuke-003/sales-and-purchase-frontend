@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch , Route, Redirect } from 'react-router-dom'
-
 import './App.css';
 import BillingPage from './pages/billing-page/billing-page'
 import Header from './components/header/header.component'
@@ -9,12 +8,15 @@ import SignInPage from './pages/sign-in-page/sign-in-page';
 import PurchasePage from './pages/purchase-page/purchase-page'
 import StockPage from './pages/stock-page/stock-page'
 import SignUpPage from './pages/sign-up-page/sign-up-page';
-
+import { myStopFunction } from './axios.config';
 
 class App extends React.Component {
-  
+componentWillUnmount() {
+  myStopFunction();
+}
 
-  render(){
+
+ render(){   
     return (
       <div className="App">
         <Header />
@@ -32,6 +34,7 @@ class App extends React.Component {
     );
   }
 }
+
 
 const mapSateToProps = state => ({
   currentUser: state.user.currentUser

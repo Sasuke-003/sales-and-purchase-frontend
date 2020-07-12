@@ -53,26 +53,21 @@ class Purchase extends Component {
        if ( timerID ) clearTimeout( timerID ) ;
        timerID = setTimeout( () =>{
            timerID = undefined ;
-           const config = {
-            headers: {
-              'Authorization': this.props.currentUser.userToken,
-            }
-        }
            const searchword = document.getElementById('name'+id).value;
-           axios.get('http://localhost:9999/item?s='+searchword, config).then(
+           axios.get('/item?s='+searchword).then(
                (res) => {
                 const { data } = this.state;
-                for(let i=0; i<res.data.data.length; i++){
-                    if(!s.has(res.data.data[i].Name)){
-                        data.push(res.data.data[i].Name);
-                        s.add(res.data.data[i].Name);
+                console.log(data)
+                for(let i=0; i<res.length; i++){
+                    if(!s.has(res[i].Name)){
+                        data.push(res[i].Name);
+                        s.add(res[i].Name);
                     }
                 }
                 this.setState({})
             }
 
            ).catch((error) => {
-            
                 console.log(error)
         })
 

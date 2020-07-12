@@ -1,14 +1,14 @@
 import axios from 'axios' ;
 import { validate } from './validator.js' ;
 
-let setToken = false ;
+let myVar;
+let interval = 5  // in sec
 
-axios.defaults.baseURL = 'http://192.168.225.4:9999' ;
+axios.defaults.baseURL = 'http://localhost:9999' ;
 
 axios.interceptors.request.use( async req => {
         console.log( req )
         await validate( req ) ;
-        if( req.url === '/user/login' ) setToken = true ;
         return req;
     }, err =>  {
         return Promise.reject( err );
@@ -16,7 +16,6 @@ axios.interceptors.request.use( async req => {
 
 axios.interceptors.response.use( res => {
         console.log( res.data ) ;
-        if( setToken ) setAccessToken( res.data.data.userToken ) ;
         return res.data.data ;
     }, err =>  {
         console.log( err.response.data ) ;
@@ -24,8 +23,20 @@ axios.interceptors.response.use( res => {
         return Promise.reject( err.response.data  );
     });
 
-function setAccessToken( token ) {
-    setToken = false ;
-    axios.defaults.headers.common['Authorization'] = token ;
-    console.log( 'token set')
+export const setToken = (token) => {
+    myVar = setInterval(myTimer, interval*1000, token);
 }
+
+function myTimer(token) {
+  axios.defaults.headers.common['Authorization'] = token;
+  console.log('send')
+}
+
+export const myStopFunction = () => {
+  clearInterval(myVar);
+  console.log('done')
+}
+
+
+
+export default axios;

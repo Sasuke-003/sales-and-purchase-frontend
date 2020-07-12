@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../../redux/user/user.actions';
-
+import { setToken } from '../../axios.config'
 import MyTextField from '../my-text-field/my-text-field';
 import MyButton from '../my-button/my-button';
 import MyPasswordField from '../my-password-field/my-password-field'
 
 import './sign-in.styles.css';
+
 
 class SignIn extends Component {
     constructor(props) {
@@ -40,6 +41,8 @@ class SignIn extends Component {
         axios.post ( '/user/login', signinData )
             .then  ( data => {
                 setCurrentUser( data ) ;
+                axios.defaults.headers.common['Authorization'] = data.userToken;
+                setToken(data.userToken);
             })
             .catch ( error => {
                 this.setState({
