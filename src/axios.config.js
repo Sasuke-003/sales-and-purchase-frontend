@@ -2,7 +2,7 @@ import axios from 'axios' ;
 import { validate } from './validator.js' ;
 
 let myVar;
-let interval = 5  // in sec
+let interval = 50  // in sec
 
 axios.defaults.baseURL = 'http://localhost:9999' ;
 
