@@ -1,42 +1,72 @@
 import axios from 'axios' ;
 import { validate } from './validator.js' ;
 
-let myVar;
-let interval = 50  // in sec
-
+let ReqID = 0  // --Dev
 axios.defaults.baseURL = 'http://localhost:9999' ;
+axios.defaults.withCredentials = true
 
 axios.interceptors.request.use( async req => {
-        console.log( req )
-        await validate( req ) ;
+    console.log( `ReqID : ${(++ReqID)}` ) ; //-Dev
+    console.log( req.data ) ;    //-Dev
+    req.ResID = ReqID ; //-Dev
+        // await validate( req ) ;
         return req;
     }, err =>  {
         return Promise.reject( err );
     });
 
-axios.interceptors.response.use( res => {
-        console.log( res.data ) ;
+axios.interceptors.response.use( 
+    res => {
+        console.log( `ResID : ${ res.config.ResID }` ) ; //-Dev
+        console.log( res.data ) ; //-Dev
         return res.data.data ;
-    }, err =>  {
-        console.log( err.response.data ) ;
-        alert( err.response.data.info ) ;
-        return Promise.reject( err.response.data  );
+    },
+    async err =>  {
+        console.log( `ResErr : ${err.config.ResID}` ) ; //-Dev
+        console.log( err.response.data ) ; //-Dev
+        switch ( err.response.data.code ) {
+            case 2 :    // Token Invalid
+            case 9 : {  // Refresh Token Expired
+                // Code to Log out 
+                // ...
+                console.log( 'Logging Out') ; //-Dev
+                return Promise.reject( err ) ;
+            }
+            case 8 : { // Access Token Expired - Get new Access Token And Retry
+                return await newAccessTokenAndRetry( err.config ) ;
+            }
+            default : {
+                if ( err.response.data.info )alert( err.response.data.info ) ;
+                return Promise.reject( err.response.data  ) ;
+            }
+        }
     });
-
-export const setToken = (token) => {
-    myVar = setInterval(myTimer, interval*1000, token);
+const newAccessToken = async () => {
+    const res = await axios.post( '/auth/access-token' ) ;
+    axios.defaults.headers.common['Authorization'] = res.AccessToken ;
+    return res.AccessToken ;
+}
+const newAccessTokenAndRetry = async prevReq => {
+    try {
+        prevReq.headers[ 'Authorization']  = await newAccessToken() ;
+        return await axios.request( prevReq ) ;
+    } catch ( err ) {
+        console.log( 'caught ') //-Dev
+        throw err ;
+    }
 }
 
-function myTimer(token) {
-  axios.defaults.headers.common['Authorization'] = token;
-  console.log('send')
-}
-
-export const myStopFunction = () => {
-  clearInterval(myVar);
-  console.log('done')
-}
-
-
-
-export default axios;
+// New Token On Refresh
+console.log( 'sending ')
+axios.post( '/auth/refresh-token', {} )
+    .then( res => { 
+        console.log( 'Token Verified - Logging In User' ) ;
+        axios.defaults.headers.common['Authorization'] = res.AccessToken ;
+        // Code Redirecting To Home Page 
+        // ..
+    })
+    .catch( err => {
+        console.log( 'Token Error - Redirecting To Login Page' ) ;
+        // Code to Log out 
+        // ...
+    }) ;

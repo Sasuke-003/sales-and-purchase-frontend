@@ -8,12 +8,11 @@ import SignInPage from './pages/sign-in-page/sign-in-page';
 import PurchasePage from './pages/purchase-page/purchase-page'
 import StockPage from './pages/stock-page/stock-page'
 import SignUpPage from './pages/sign-up-page/sign-up-page';
-import { myStopFunction } from './axios.config';
 
 class App extends React.Component {
-componentWillUnmount() {
-  myStopFunction();
-}
+// componentWillUnmount() {
+//   myStopFunction();
+// }
 
 
  render(){   

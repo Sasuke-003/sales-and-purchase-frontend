@@ -9,7 +9,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import { myStopFunction } from '../../axios.config';
 
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -22,6 +21,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import MenuIcon from '@material-ui/icons/Menu';
+import Axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,7 +125,7 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
     <div className='options'>
       {
         currentUser ?
-            <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); myStopFunction();}}>
+            <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); Axios.post( '/user/logout' ) ; }}>
                 LOG OUT
             </Button>
         :

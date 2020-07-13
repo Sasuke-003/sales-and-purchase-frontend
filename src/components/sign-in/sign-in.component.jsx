@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../../redux/user/user.actions';
-import { setToken } from '../../axios.config'
 import MyTextField from '../my-text-field/my-text-field';
 import MyButton from '../my-button/my-button';
 import MyPasswordField from '../my-password-field/my-password-field'
@@ -35,21 +34,15 @@ class SignIn extends Component {
         const { setCurrentUser } = this.props;
 
         const signinData = {
-            Email: this.state.userName,
+            Email   : this.state.userName,
             Password: this.state.password
         }
         axios.post ( '/user/login', signinData )
-            .then  ( data => {
+            .then  ( data  => { 
+                axios.defaults.headers.common['Authorization'] = data.AccessToken ;
                 setCurrentUser( data ) ;
-                axios.defaults.headers.common['Authorization'] = data.userToken;
-                setToken(data.userToken);
             })
-            .catch ( error => {
-                this.setState({
-                    password: '',
-                    isPasswordError: true
-                })
-            });
+            .catch ( error => { this.setState ({ isPasswordError: true }) });
     }
 
     render() {
