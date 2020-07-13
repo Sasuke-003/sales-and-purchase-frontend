@@ -40,6 +40,7 @@ const ItemTable = ({ data, item, deleteItem, index, handleChange,  handleItemCha
     </Grid>
     <Grid item xs={10} sm={4} >
       <MyTextField 
+        key={1}
         className='item-detail'
         id={'name'+item.id}
         type='text'
@@ -51,6 +52,7 @@ const ItemTable = ({ data, item, deleteItem, index, handleChange,  handleItemCha
       </Grid>
       <Grid item xs={10} sm={3}>
       <MyTextField 
+        key={2}
         className='item-detail'
         id={'quantity'+item.id}
         type='number'
@@ -60,6 +62,7 @@ const ItemTable = ({ data, item, deleteItem, index, handleChange,  handleItemCha
       </Grid>
       <Grid item xs={10} sm={3}>
       <TextField  
+        key={3}
         className='item-detail'
         id="standard-select-currency"
         select

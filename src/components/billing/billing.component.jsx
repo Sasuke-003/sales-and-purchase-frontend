@@ -53,6 +53,30 @@ class Billing extends Component {
         this.setState({});
     }
 
+    handleItemChange = id => {
+        if ( timerID ) clearTimeout( timerID ) ;
+        timerID = setTimeout( () =>{
+            timerID = undefined ;
+            const searchword = document.getElementById('name'+id).value;
+            axios.get('/item?s='+searchword).then(
+                (res) => {
+                    const { data } = this.state;
+                    for(let i=0; i<res.data.length; i++){
+                        if(!s.has(res.data[i].Name)){
+                            data.push(res.data[i].Name);
+                            s.add(res.data[i].Name);
+                        }
+                    }
+                    this.setState({})
+                }
+ 
+            ).catch((error) => {
+                console.log(error)
+            })
+ 
+        } , timeOutValue ) ;
+    }
+
     submitItem = () => {
         const { cart } = this.state;
         for(let i=0; i<cart.length;i++){
@@ -62,31 +86,6 @@ class Billing extends Component {
         }
     }
 
-    handleItemChange = id => {
-        if ( timerID ) clearTimeout( timerID ) ;
-        timerID = setTimeout( () =>{
-            timerID = undefined ;
-            const searchword = document.getElementById('name'+id).value;
-            axios.get('/item?s='+searchword).then(
-                (res) => {
-                 const { data } = this.state;
-                 for(let i=0; i<res.data.length; i++){
-                     if(!s.has(res.data[i].Name)){
-                         data.push(res.data[i].Name);
-                         s.add(res.data[i].Name);
-                     }
-                 }
-                 this.setState({})
-             }
- 
-            ).catch((error) => {
-             
-                 console.log(error)
-         })
- 
-        } , timeOutValue ) ;
-     }
-
     render() {
         const { data, cart } = this.state;
         return (
@@ -95,8 +94,8 @@ class Billing extends Component {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
                         <ItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
-                        handleItemChange={this.handleItemChange}
-                         /> 
+                            handleItemChange={this.handleItemChange}
+                        /> 
                         <Divider /> 
                     </div>
                 ))

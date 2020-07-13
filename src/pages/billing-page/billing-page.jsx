@@ -51,7 +51,7 @@ TabPanel.propTypes = {
     root: {
       backgroundColor: theme.palette.background.paper,
       width: '100%',
-      paddingTop: '60px',
+      paddingTop: '25px',
     },
   }));
 

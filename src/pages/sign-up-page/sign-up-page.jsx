@@ -5,7 +5,7 @@ import './sign-up-page.styles.css';
 const SignUpPage = () => {
     return (
         <div className='container'>
-        <h2>SIGN UP</h2>
+        <h2>ADD USER</h2>
         <SignUp />
         </div>
     );

@@ -7,15 +7,26 @@ import { setCurrentUser } from '../../redux/user/user.actions'
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import HomeIcon from '@material-ui/icons/Home';
 import { myStopFunction } from '../../axios.config';
+
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ReceiptIcon from '@material-ui/icons/Receipt';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    justifyContent: 'space-between',
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -23,53 +34,104 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  list: {
+    width: 250,
+  },
 }));
 
 const Header = ({ currentUser, setCurrentUser, history}) => {
   const classes = useStyles();
+  const [state, setState] = React.useState({
+    left: false,
+  });
 
-  return (
-    <div className={classes.root}>
-    <AppBar position='fixed'>
-    <Toolbar>
-      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => {history.push('/')}} >
-        <HomeIcon />
-      </IconButton>
-      <Typography variant="h6" className={classes.title}>
-        
-      </Typography>
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
+
+  const list = (anchor, currentUser) => (
+    <div
+      className={classes.list}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        <ListItem button key={1} onClick={() => {history.push('/')}} >
+          <ListItemIcon> <ReceiptIcon /> </ListItemIcon>
+          <ListItemText primary='BILLING' />
+        </ListItem>
         {
-            currentUser && currentUser.userType === 'a' ?
-                <Button color='inherit' className='option' onClick={() => {history.push('/purchase')}}>
-                    PURCHASE
-                </Button> 
-            :
-                null
-        }
-        {
-            currentUser && currentUser.userType === 'a' ?
-            <Button color='inherit' className='option' onClick={() => {history.push('/stock')}}>
-                STOCK
-            </Button> 
-            :
-                null
+          currentUser && currentUser.userType === 'a' ?
+            <ListItem button key={2} onClick={() => {history.push('/purchase')}} >
+              <ListItemIcon> <ShoppingCartIcon /> </ListItemIcon>
+              <ListItemText primary='PURCHASE' />
+            </ListItem>
+          :
+            null
         }
         {
           currentUser && currentUser.userType === 'a' ?
-            <Button color='inherit' className='option' onClick={() => {history.push('/signup')}}>
-                    SIGN UP
-                </Button>
-            :
-                null
-        }
-        {
-          currentUser ?
-              <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); myStopFunction();}}>
-                  LOG OUT
-              </Button>
+            <ListItem button key={3} onClick={() => {history.push('/stock')}} >
+              <ListItemIcon> <ShowChartIcon /> </ListItemIcon>
+              <ListItemText primary='STOCK' />
+            </ListItem>
           :
-              null
-          }
+            null
+        }
+      </List>
+      <Divider />
+      <List>
+        {
+          currentUser && currentUser.userType === 'a' ?
+            <ListItem button key={4} onClick={() => {history.push('/signup')}} >
+              <ListItemIcon> <PersonAddIcon /> </ListItemIcon>
+              <ListItemText primary='ADD USER' />
+            </ListItem>
+          :
+            null
+        }
+      </List>
+    </div>
+  );
+
+  return (
+    <div className={`${classes.root} header`} >
+    <AppBar position='fixed'>
+    <Toolbar>
+    {
+      currentUser ?
+        <React.Fragment key={0}>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer('left', true)} >
+            <MenuIcon />
+          </IconButton>
+          <SwipeableDrawer
+            anchor='left'
+            open={state['left']}
+            onClose={toggleDrawer('left', false)}
+            onOpen={toggleDrawer('left', true)}
+          >
+            {list('left', currentUser)}
+          </SwipeableDrawer>
+        </React.Fragment>
+      :
+          null
+    }
+    <div className='options'>
+      {
+        currentUser ?
+            <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); myStopFunction();}}>
+                LOG OUT
+            </Button>
+        :
+            null
+      }
+    </div>
     </Toolbar>
   </AppBar>
     </div>
