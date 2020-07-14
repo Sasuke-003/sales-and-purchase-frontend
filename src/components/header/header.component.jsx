@@ -67,7 +67,7 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
           <ListItemText primary='BILLING' />
         </ListItem>
         {
-          currentUser && currentUser.userType === 'a' ?
+          currentUser && currentUser.Type === 'a' ?
             <ListItem button key={2} onClick={() => {history.push('/purchase')}} >
               <ListItemIcon> <ShoppingCartIcon /> </ListItemIcon>
               <ListItemText primary='PURCHASE' />
@@ -76,7 +76,7 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
             null
         }
         {
-          currentUser && currentUser.userType === 'a' ?
+          currentUser && currentUser.Type === 'a' ?
             <ListItem button key={3} onClick={() => {history.push('/stock')}} >
               <ListItemIcon> <ShowChartIcon /> </ListItemIcon>
               <ListItemText primary='STOCK' />
@@ -88,7 +88,7 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
       <Divider />
       <List>
         {
-          currentUser && currentUser.userType === 'a' ?
+          currentUser && currentUser.Type === 'a' ?
             <ListItem button key={4} onClick={() => {history.push('/signup')}} >
               <ListItemIcon> <PersonAddIcon /> </ListItemIcon>
               <ListItemText primary='ADD USER' />

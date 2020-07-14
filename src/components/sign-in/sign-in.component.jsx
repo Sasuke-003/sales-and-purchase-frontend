@@ -40,7 +40,7 @@ class SignIn extends Component {
         axios.post ( '/user/login', signinData )
             .then  ( data  => { 
                 axios.defaults.headers.common['Authorization'] = data.AccessToken ;
-                setCurrentUser( data ) ;
+                setCurrentUser({ Type: data.Type }) ;
             })
             .catch ( error => { this.setState ({ isPasswordError: true }) });
     }

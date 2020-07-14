@@ -1,5 +1,7 @@
 import axios from 'axios' ;
 import { validate } from './validator.js' ;
+import { store } from './redux/store'
+import { setCurrentUser } from './redux/user/user.actions';
 
 let ReqID = 0  // --Dev
 axios.defaults.baseURL = 'http://localhost:9999' ;
@@ -29,6 +31,7 @@ axios.interceptors.response.use(
             case 9 : {  // Refresh Token Expired
                 // Code to Log out 
                 // ...
+                store.dispatch(setCurrentUser(null));
                 console.log( 'Logging Out') ; //-Dev
                 return Promise.reject( err ) ;
             }
@@ -69,4 +72,5 @@ axios.post( '/auth/refresh-token', {} )
         console.log( 'Token Error - Redirecting To Login Page' ) ;
         // Code to Log out 
         // ...
+        store.dispatch(setCurrentUser(null));
     }) ;
