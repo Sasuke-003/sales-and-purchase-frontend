@@ -11,7 +11,7 @@ axios.interceptors.request.use( async req => {
     console.log( `ReqID : ${(++ReqID)}` ) ; //-Dev
     console.log( req.data ) ;    //-Dev
     req.ResID = ReqID ; //-Dev
-        // await validate( req ) ;
+        await validate( req ) ;
         return req;
     }, err =>  {
         return Promise.reject( err );
