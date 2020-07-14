@@ -1,4 +1,4 @@
-const { user, item, seller, sale, purchase } = require( './validator.config.js' ) ;
+const { user, item, seller, sale, purchase, auth } = require( './validator.config.js' ) ;
 
 const validator = {
 
@@ -21,9 +21,12 @@ const validator = {
     // "/purchase/list-all" : purchase.listAll,
     // "/purchase/list-my"  : purchase.listMy,
 
+    "/auth/refresh-token" : auth.refreshToken,
+    "/auth/access-token" : auth.accessToken,
+    
     } ;
     
-    export const validate = async ( { url, data } ) => {
-        try           { return await validator[ url ].validateAsync( data ) ; }
+    export const validate = async ( req ) => {
+        try           { await validator[ req.url ].validateAsync( req.data ) ; return req ; }
         catch ( err ) { alert ( err.details[0].message ); throw err  ;       }
     }
