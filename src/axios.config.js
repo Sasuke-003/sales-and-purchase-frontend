@@ -8,24 +8,23 @@ axios.defaults.baseURL = 'http://localhost:9999' ;
 axios.defaults.withCredentials = true
 
 axios.interceptors.request.use( async req => {
-    console.log( `ReqID : ${(++ReqID)}` ) ; //-Dev
-    console.log( req.data ) ;    //-Dev
+    console.warn( `Request : ${( ++ReqID )}, url : ${req.url}` ) ; //-Dev 
+    console.log( req.data  ) ;    //-Dev
     req.ResID = ReqID ; //-Dev
-        // await validate( req ) ;
-        return req;
+        return await validate( req ) ;
     }, err =>  {
         return Promise.reject( err );
     });
 
 axios.interceptors.response.use( 
     res => {
-        console.log( `ResID : ${ res.config.ResID }` ) ; //-Dev
+        console.warn( `Response : ${( res.config.ResID )}, url : ${res.config.url}` ) ; //-Dev 
         console.log( res.data ) ; //-Dev
         return res.data.data ;
     },
     async err =>  {
-        console.log( `ResErr : ${err.config.ResID}` ) ; //-Dev
-        console.log( err.response.data ) ; //-Dev
+        console.warn( `Response Error : ${ err.config.ResID } : ${ err.config.url }` ) ; //-Dev
+        console.log( err.response.data  ) ; //-Dev
         switch ( err.response.data.code ) {
             case 2 :    // Token Invalid
             case 9 : {  // Refresh Token Expired
@@ -37,7 +36,8 @@ axios.interceptors.response.use(
                 return Promise.reject( err ) ;
             }
             case 8 : { // Access Token Expired - Get new Access Token And Retry
-                return await newAccessTokenAndRetry( err.config ) ;
+                err.config.data = JSON.parse( new String( err.config.data  ) ) ;
+                return await newAccessTokenAndRetry( err.config) ;
             }
             default : {
                 if ( err.response.data.info )alert( err.response.data.info ) ;
@@ -52,6 +52,7 @@ const newAccessToken = async () => {
 }
 const newAccessTokenAndRetry = async prevReq => {
     try {
+        console.log( prevReq.headers )
         prevReq.headers[ 'Authorization']  = await newAccessToken() ;
         return await axios.request( prevReq ) ;
     } catch ( err ) {
@@ -61,8 +62,7 @@ const newAccessTokenAndRetry = async prevReq => {
 }
 
 // New Token On Refresh
-console.log( 'sending ')
-axios.post( '/auth/refresh-token', {} )
+axios.post( '/auth/refresh-token' )
     .then( res => { 
         console.log( 'Token Verified - Logging In User' ) ;
         axios.defaults.headers.common['Authorization'] = res.AccessToken ;
