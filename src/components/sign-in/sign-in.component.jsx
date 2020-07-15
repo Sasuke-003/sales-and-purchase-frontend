@@ -5,7 +5,6 @@ import { setCurrentUser } from '../../redux/user/user.actions';
 import MyTextField from '../my-text-field/my-text-field';
 import MyButton from '../my-button/my-button';
 import MyPasswordField from '../my-password-field/my-password-field'
-
 import './sign-in.styles.css';
 
 

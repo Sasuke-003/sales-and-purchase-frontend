@@ -32,6 +32,7 @@ axios.interceptors.response.use(
                 // Code to Log out 
                 // ...
                 store.dispatch(setCurrentUser(null));
+                axios.post( '/user/logout' ) ;
                 console.log( 'Logging Out') ; //-Dev
                 return Promise.reject( err ) ;
             }
@@ -73,4 +74,5 @@ axios.post( '/auth/refresh-token', {} )
         // Code to Log out 
         // ...
         store.dispatch(setCurrentUser(null));
+                axios.post( '/user/logout' ) ;
     }) ;
