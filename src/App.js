@@ -20,15 +20,15 @@ class App extends React.Component {
       <div className="App">
         <Header />
         <Switch>
-        <Route exact path='/' render={() => !this.props.currentUser ? (<Redirect to='/signin' />) : (<BillingPage />) } /> 
-        <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInPage />) } /> 
-        <Route exact path='/purchase' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
-        (<PurchasePage />) : (<Redirect to='/' />) } /> 
-        <Route exact path='/stock' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
-        (<StockPage />) : (<Redirect to='/' />) } />
-        <Route exact path='/signup' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
-        (<SignUpPage />) : (<Redirect to='/' />) } />  
-      </Switch>
+          <Route exact path='/' render={() => !this.props.currentUser ? (<Redirect to='/signin' />) : (<BillingPage />) } /> 
+          <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInPage />) } /> 
+          <Route exact path='/purchase' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
+            (<PurchasePage />) : (<Redirect to='/' />) } /> 
+          <Route exact path='/stock' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
+            (<StockPage />) : (<Redirect to='/' />) } />
+          <Route exact path='/signup' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
+            (<SignUpPage />) : (<Redirect to='/' />) } />  
+        </Switch>
       </div>
     );
   }

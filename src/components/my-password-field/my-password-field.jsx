@@ -8,6 +8,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import './my-password-field.styles.css'
+import shallowCompare from 'react-addons-shallow-compare';
 
 const theme = createMuiTheme({
     palette: {
@@ -34,8 +35,12 @@ class MyTextField extends React.Component  {
         event.preventDefault();
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+      }
+
     render(){
-        const { name, id, datalist, className, type, label ,...otherProps } = this.props;
+        const { name, id, datalist, className, type, label , value,...otherProps } = this.props;
         const { showPassword } = this.state;
         return (  
             <ThemeProvider theme={theme}>
@@ -46,6 +51,7 @@ class MyTextField extends React.Component  {
                                 name= {name}
                                 id="filled-adornment-password"
                                 type={showPassword ? 'text' : 'password'}
+                                value={value}
                                 autoComplete={'off'}
                                 endAdornment={
                                     <InputAdornment position="end">

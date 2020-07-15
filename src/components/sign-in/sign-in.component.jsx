@@ -36,7 +36,6 @@ class SignIn extends Component {
             Email   : this.state.userName,
             Password: this.state.password
         }
-        setCurrentUser({ Type: 'a' }) ;
         axios.post ( '/user/login', signinData )
             .then  ( data  => { 
                 axios.defaults.headers.common['Authorization'] = data.AccessToken ;
