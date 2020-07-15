@@ -56,22 +56,23 @@ class Billing extends Component {
         timerID = setTimeout( () =>{
             timerID = undefined ;
             const searchword = this.state.cart[index].name;
-            axios.get('/item?s='+searchword).then(
-                (res) => {
-                    console.log(res);
-                    for(let i=0; i<res.data.length; i++){
-                        if(!s.has(res.data[i].Name)){
-                            this.setState({
-                                data: this.state.data.concat(res.data[i].Name)
-                            });
-                            s.add(res.data[i].Name);
+            if (searchword !== ''){
+                axios.post('/item', {"S":searchword}).then(
+                    (res) => {
+                        for(let i=0; i<res.length; i++){
+                            if(!s.has(res[i].Name)){
+                                this.setState({
+                                    data: this.state.data.concat(res[i].Name)
+                                });
+                                s.add(res[i].Name);
+                            }
                         }
                     }
-                }
- 
-            ).catch((error) => {
-                console.log(error)
-            })
+    
+                ).catch((error) => {
+                    console.log(error)
+                })
+            }
  
         } , timeOutValue ) ;
     }

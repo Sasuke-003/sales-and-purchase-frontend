@@ -7,7 +7,7 @@ const validator = {
     "/user/signup" : user.signup,
 
     "/item/add"    : item.add   , 
-    "/item/search" : item.search,
+    "/item" : item.search,
     "/item/detail" : item.detail,
     "/item/update" : item.update,
 

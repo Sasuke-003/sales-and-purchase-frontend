@@ -2,7 +2,6 @@ import React from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import './inputfield.styles.css'
-import shallowCompare from 'react-addons-shallow-compare';
 
 const theme = createMuiTheme({
     palette: {
@@ -43,6 +42,9 @@ class  InputField extends React.Component {
                             <TextField inputProps={{list: 'datalist1'}} autoComplete={'off'} value={value} {...otherProps}  />    
                         :
                             <TextField autoComplete={'off'} value={value} {...otherProps}  />
+                    }
+                    {
+                        console.log('text')
                     }
                 </div>
             </ThemeProvider>
