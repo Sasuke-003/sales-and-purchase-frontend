@@ -15,7 +15,10 @@ const theme = createMuiTheme({
 class  InputField extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
+        if (nextProps.value === this.props.value){
+            return false
+        }
+        return true
       }
 
     render(){
@@ -40,9 +43,6 @@ class  InputField extends React.Component {
                             <TextField inputProps={{list: 'datalist1'}} autoComplete={'off'} value={value} {...otherProps}  />    
                         :
                             <TextField autoComplete={'off'} value={value} {...otherProps}  />
-                    }
-                    {
-                        console.log("input-field")
                     }
                 </div>
             </ThemeProvider>

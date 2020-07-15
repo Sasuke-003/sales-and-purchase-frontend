@@ -7,23 +7,15 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem'
 import InputField from '../input-field/inputfield.component'
 
-import MyTextField from '../my-text-field/my-text-field';
 import MyTypography from '../my-typography/my-typography'
 import './item-input.styles.css'
 
 import shallowCompare from 'react-addons-shallow-compare';
 
 
-
-let timerID ;
-const timeOutValue = 500 ;
-let s = new Set();
-
 class ItemTable extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextProps);
-    console.log(this.props);
     return shallowCompare(this, nextProps, nextState);
   }
 
@@ -66,7 +58,6 @@ class ItemTable extends React.Component {
               key={item.id+3}
               name='units'
               className='item-detail'
-              id="standard-select-currency"
               value={item.units}
               onChange={(event) => handleChange(event, index, item.id)}
               label="Select"
@@ -80,12 +71,7 @@ class ItemTable extends React.Component {
             </IconButton>
           </Grid>
         </Grid>
-        {
-          console.log("input")
-        }
       </div>
-
-    
   )
   }
 }

@@ -30,47 +30,43 @@ class Billing extends Component {
 
     addItem = () => {
         this.setState({
-            cart: this.state.cart.concat({
-                name: '',
-                quantity: '',
-                units: '',
-                id: Date.now()
-            })
+            cart: [...this.state.cart, {
+                            name: '',
+                            quantity: '',
+                            units: '',
+                            id: Date.now()
+                    }]
         });
     }
 
     deleteItem = (id, i) => {
-        const newCart = this.state.cart.filter((item) => item.id !== id);
         this.setState({
-            cart: newCart,
+            cart: this.state.cart.filter((c, index) => index !== i ),
         })
     }
 
     handleChange = (event, index, id) => {
-        const cart = this.state.cart;
-        cart[index][event.target.name] = event.target.value;
         this.setState({
-            cart: cart
+            cart: this.state.cart.map((c, i) => {
+                if (i !== index) return c;
+                return {...c, [event.target.name]: event.target.value }
+            })
         });
-        this.setState((state, props) => {
-            return {counter: state.counter + props.step};
-        });
-
-
         if ( timerID ) clearTimeout( timerID ) ;
         timerID = setTimeout( () =>{
             timerID = undefined ;
             const searchword = this.state.cart[index].name;
             axios.get('/item?s='+searchword).then(
                 (res) => {
-                    const { data } = this.state;
+                    console.log(res);
                     for(let i=0; i<res.data.length; i++){
                         if(!s.has(res.data[i].Name)){
-                            data.push(res.data[i].Name);
+                            this.setState({
+                                data: this.state.data.concat(res.data[i].Name)
+                            });
                             s.add(res.data[i].Name);
                         }
                     }
-                    this.setState({})
                 }
  
             ).catch((error) => {
