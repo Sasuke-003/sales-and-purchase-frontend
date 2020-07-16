@@ -38,15 +38,14 @@ class Purchase extends Component {
 
     deleteItem = (id, i) => {
         this.setState({
-            cart: this.state.cart.filter((c, index) => index !== i ),
+            cart: this.state.cart.filter((c) => c.id !== id ),
         })
     }
 
-   
     handleChange = (event, index, id) => {
         this.setState({
-            cart: this.state.cart.map((c, i) => {
-                if (i !== index) return c;
+            cart: this.state.cart.map((c) => {
+                if (c.id !== id) return c;
                 return {...c, [event.target.name]: event.target.value }
             })
         });
