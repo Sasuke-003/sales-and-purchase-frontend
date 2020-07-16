@@ -21,6 +21,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import MenuIcon from '@material-ui/icons/Menu';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -77,7 +78,16 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
         }
         {
           currentUser && currentUser.Type === 'a' ?
-            <ListItem button key={3} onClick={() => {history.push('/stock')}} >
+            <ListItem button key={3} onClick={() => {history.push('/additem')}} >
+              <ListItemIcon> <AddShoppingCartIcon /> </ListItemIcon>
+              <ListItemText primary='ADD ITEM' />
+            </ListItem>
+          :
+            null
+        }
+        {
+          currentUser && currentUser.Type === 'a' ?
+            <ListItem button key={4} onClick={() => {history.push('/stock')}} >
               <ListItemIcon> <ShowChartIcon /> </ListItemIcon>
               <ListItemText primary='STOCK' />
             </ListItem>
