@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 
 let timerID ;
-const timeOutValue = 700 ;
+const timeOutValue = 500 ;
 let s = new Set();
 
 class AddItem extends Component {
@@ -31,9 +31,9 @@ class AddItem extends Component {
     addItem = () => {
         this.setState({
             cart: [...this.state.cart, {
-                            name: '',
-                            quantity: '',
-                            units: '',
+                            Name: '',
+                            Qty: '',
+                            Unit: '',
                             id: Date.now()
                     }]
         });
@@ -55,7 +55,7 @@ class AddItem extends Component {
         if ( timerID ) clearTimeout( timerID ) ;
         timerID = setTimeout( () =>{
             timerID = undefined ;
-            const searchword = this.state.cart[index].name;
+            const searchword = this.state.cart[index].Name;
             if (searchword !== ''){
                 axios.post('/item', {"S":searchword}).then(
                     (res) => {
@@ -84,7 +84,15 @@ class AddItem extends Component {
         //     console.log(document.getElementById('quantity'+cart[i].id).value);
         //     console.log(cart[i]['units']);
         // }
-        console.log(this.state);
+        this.state.cart.map(async (c) => (
+           await axios.post('/item/add', {
+                Name: c.Name,
+                Unit: c.Unit,
+                Qty: c.Qty,
+            })
+        ));
+        this.setState({cart: []})
+        console.log(this.state.cart);
     }
 
     render() {

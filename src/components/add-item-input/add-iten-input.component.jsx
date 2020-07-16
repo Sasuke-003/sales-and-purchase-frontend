@@ -42,9 +42,9 @@ class AddItemTable extends React.Component {
           <Grid item xs={10} sm={4} >
             <InputField 
               key={item.id+1}
-              name='name'
+              name='Name'
               type='text'
-              value={item.name}
+              value={item.Name}
               label='NAME'
               onChange={(event) => handleChange(event, index, item.id)}
               datalist={data}
@@ -54,8 +54,8 @@ class AddItemTable extends React.Component {
           <Grid item xs={10} sm={3}>
             <InputField 
               key={item.id+2}
-              name='quantity'
-              value={item.quantity}
+              name='Qty'
+              value={item.Qty}
               onChange={(event) => handleChange(event, index, item.id)}
               type='number'
               label='QUANTITY'
@@ -68,10 +68,10 @@ class AddItemTable extends React.Component {
             
                 <InputLabel id="demo-simple-select-label">UNIT</InputLabel>
                 <Select
-                        name='units'
+                        name='Unit'
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={item.units}
+                        value={item.Unit}
                         onChange={(event) => handleChange(event, index, item.id)}
                     >
                     <MenuItem value={'UNITS'}>units</MenuItem>

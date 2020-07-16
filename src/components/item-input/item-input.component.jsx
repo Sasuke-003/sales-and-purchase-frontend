@@ -27,9 +27,9 @@ class ItemTable extends React.Component {
           <Grid item xs={10} sm={4} >
             <InputField 
               key={item.id+1}
-              name='name'
+              name='Name'
               type='text'
-              value={item.name}
+              value={item.Name}
               label='NAME'
               onChange={(event) => handleChange(event, index, item.id)}
               datalist={data}
@@ -39,8 +39,8 @@ class ItemTable extends React.Component {
           <Grid item xs={10} sm={3}>
             <InputField 
               key={item.id+2}
-              name='quantity'
-              value={item.quantity}
+              name='Qty'
+              value={item.Qty}
               onChange={(event) => handleChange(event, index, item.id)}
               type='number'
               label='QUANTITY'
@@ -50,8 +50,8 @@ class ItemTable extends React.Component {
           <Grid item xs={10} sm={3}>
             <InputField  
               key={item.id+3}
-              name='units'
-              value={item.units}
+              name='Unit'
+              value={item.Unit}
               onChange={(event) => handleChange(event, index, item.id)}
               label="Units"
               fullWidth

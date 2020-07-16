@@ -28,9 +28,9 @@ class Purchase extends Component {
     addItem = () => {
         this.setState({
             cart: [...this.state.cart, {
-                            name: '',
-                            quantity: '',
-                            units: '',
+                            Name: '',
+                            Qty: '',
+                            Unit: '',
                             id: Date.now()
                     }]
         });
@@ -52,7 +52,7 @@ class Purchase extends Component {
         if ( timerID ) clearTimeout( timerID ) ;
         timerID = setTimeout( () =>{
             timerID = undefined ;
-            const searchword = this.state.cart[index].name;
+            const searchword = this.state.cart[index].Name;
             if (searchword !== ''){
                 axios.post('/item', {"S":searchword}).then(
                     (res) => {

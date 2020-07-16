@@ -36,7 +36,7 @@ axios.interceptors.response.use(
                 return Promise.reject( err ) ;
             }
             case 8 : { // Access Token Expired - Get new Access Token And Retry
-                err.config.data = JSON.parse( new String( err.config.data  ) ) ;
+                err.config.data = JSON.parse( `${err.config.data}`  ) ;
                 return await newAccessTokenAndRetry( err.config) ;
             }
             default : {
