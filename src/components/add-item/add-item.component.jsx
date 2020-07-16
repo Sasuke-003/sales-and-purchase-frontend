@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ItemTable from '../item-input/item-input.component';
+import AddItemTable from '../add-item-input/add-iten-input.component';
 import Divider from '@material-ui/core/Divider';
 import MyFloatingButton from '../my-floating-button/my-floating-button';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 
 let timerID ;
-const timeOutValue = 500 ;
+const timeOutValue = 700 ;
 let s = new Set();
 
 class AddItem extends Component {
@@ -52,6 +52,29 @@ class AddItem extends Component {
                 return {...c, [event.target.name]: event.target.value }
             })
         });
+        if ( timerID ) clearTimeout( timerID ) ;
+        timerID = setTimeout( () =>{
+            timerID = undefined ;
+            const searchword = this.state.cart[index].name;
+            if (searchword !== ''){
+                axios.post('/item', {"S":searchword}).then(
+                    (res) => {
+                        for(let i=0; i<res.length; i++){
+                            if(!s.has(res[i].Name)){
+                                this.setState({
+                                    data: this.state.data.concat(res[i].Name)
+                                });
+                                s.add(res[i].Name);
+                            }
+                        }
+                    }
+    
+                ).catch((error) => {
+                    console.log(error)
+                })
+            }
+ 
+        } , timeOutValue ) ;
     }
 
     submitItem = () => {
@@ -71,7 +94,7 @@ class AddItem extends Component {
             {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
-                        <ItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
+                        <AddItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
                         /> 
                         <Divider /> 
                     </div>
