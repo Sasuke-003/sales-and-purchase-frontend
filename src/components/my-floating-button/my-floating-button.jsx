@@ -41,7 +41,7 @@ const MyFloatingButton = ({done, ...otherProps}) => {
       done?
         <Fab className={`${classes.fabb} ${classes.extendedIcon}`} variant='extended' color="primary"  {...otherProps}>
           <DoneIcon />
-          Submit
+          Confirm
         </Fab>
       :
         <Fab className={classes.fab} color="primary" aria-label="add" {...otherProps}>

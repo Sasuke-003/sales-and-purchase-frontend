@@ -14,7 +14,7 @@ const theme = createMuiTheme({
 class  InputField extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.value === this.props.value){
+        if (nextProps.value === this.props.value && nextProps.datalist === this.props.datalist){
             return false
         }
         return true

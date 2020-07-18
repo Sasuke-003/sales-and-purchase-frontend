@@ -46,16 +46,17 @@ class Billing extends Component {
     }
 
     handleChange = (event, index, id) => {
+        const { value } = event.target;
         this.setState({
             cart: this.state.cart.map((c) => {
                 if (c.id !== id) return c;
-                return {...c, [event.target.name]: event.target.value }
+                return {...c, [event.target.name]: value }
             })
         });
         if ( timerID ) clearTimeout( timerID ) ;
         timerID = setTimeout( () =>{
             timerID = undefined ;
-            const searchword = this.state.cart[index].Name;
+            const searchword = value;
             if (searchword !== ''){
                 axios.post('/item', {"S":searchword}).then(
                     (res) => {

@@ -4,11 +4,17 @@ import Divider from '@material-ui/core/Divider';
 import MyFloatingButton from '../my-floating-button/my-floating-button';
 import axios from 'axios';
 import { connect } from 'react-redux'
-
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import AddItemPopup from '../add-item-popup/add-item-popup.component';
 
 
 let timerID ;
-const timeOutValue = 500 ;
+const timeOutValue = 100 ;
 let s = new Set();
 
 class AddItem extends Component {
@@ -18,10 +24,21 @@ class AddItem extends Component {
         this.state={
             data : [ ],
 
-            cart : [ ]
+            cart : [ ],
+
+            popperStatus : false
         }
 
     }
+
+     handleClick = (event) => {
+        this.setState({
+            popperStatus: !this.state.popperStatus
+        })
+      }
+    
+     
+    
     
     componentDidMount(){
         this.addItem();
@@ -46,16 +63,17 @@ class AddItem extends Component {
     }
 
     handleChange = (event, index, id) => {
+        const { value } = event.target;
         this.setState({
             cart: this.state.cart.map((c) => {
                 if (c.id !== id) return c;
-                return {...c, [event.target.name]: event.target.value }
+                return {...c, [event.target.name]: value }
             })
         });
         if ( timerID ) clearTimeout( timerID ) ;
         timerID = setTimeout( () =>{
             timerID = undefined ;
-            const searchword = this.state.cart[index].Name;
+            const searchword = value;
             if (searchword !== ''){
                 axios.post('/item', {"S":searchword}).then(
                     (res) => {
@@ -95,21 +113,41 @@ class AddItem extends Component {
         console.log(this.state.cart);
     }
 
+
     render() {
-        const { data, cart } = this.state;
+        const { data, cart, popperStatus } = this.state;
         return (
             <div>
-            {
-                cart.map((item, index) => (
-                    <div key={item.id} className='item-container'>
-                        <AddItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
-                        /> 
-                        <Divider /> 
-                    </div>
-                ))
-            }
-            <MyFloatingButton onClick={this.addItem} />
-            <MyFloatingButton onClick={this.submitItem} done/>
+                {
+                    cart.map((item, index) => (
+                        <div key={item.id} className='item-container'>
+                            <AddItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
+                            /> 
+                            <Divider /> 
+                        </div>
+                    ))
+                }
+                <MyFloatingButton onClick={this.addItem} />
+                <MyFloatingButton onClick={this.handleClick} done  disabled={cart.length ? false : true }   />
+                <Dialog
+                    open={popperStatus}
+                    onClose={this.handleClick}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Confirm Items"}</DialogTitle>
+                    <DialogContent>
+                        <AddItemPopup data={data} cart={cart} />
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={this.handleClick} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.submitItem} color="primary" autoFocus>
+                        Submit
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }
