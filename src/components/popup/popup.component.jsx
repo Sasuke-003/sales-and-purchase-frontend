@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 
-const AddItemPopup = ({ data, cart, text }) => {
+const ItemPopup = ({ data, cart, text }) => {
     return (
         <div>
         <Paper style={{maxHeight: 500, overflow: 'auto'}}>
@@ -14,7 +14,7 @@ const AddItemPopup = ({ data, cart, text }) => {
                     <ListItem  key ={index} >
                         <ListItemText
                             primary={`${c.Name}       ${c.Qty} ${c.Unit}`}
-                            secondary={`${data.indexOf(c.Name) !== -1 ? "This item is already added!" : ""}`}
+                            secondary={`${data.indexOf(c.Name) !== -1 ? "" : "This item is Unavailable!"}`}
                             secondaryTypographyProps={{style: {color:'red'}}}
                             primaryTypographyProps={{style: {fontSize:'20px'}}}
                         />
@@ -27,4 +27,4 @@ const AddItemPopup = ({ data, cart, text }) => {
     );
 };
 
-export default AddItemPopup;
+export default ItemPopup;

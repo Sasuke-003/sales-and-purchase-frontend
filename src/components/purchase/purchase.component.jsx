@@ -5,6 +5,12 @@ import MyFloatingButton from '../my-floating-button/my-floating-button'
 import axios from 'axios';
 import { connect } from 'react-redux'
 import './purchase.styles.css'
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import ItemPopup from '../popup/popup.component';
 
 let timerID ;
 const timeOutValue = 500 ;
@@ -16,10 +22,40 @@ class Purchase extends Component {
         
         this.state={
             data : [ ],
-            cart : [ ]
+            cart : [ ],
+
+            popperStatus : false,
+
+            submitDisabled : false
         }
     }
     
+    handleClick = (event) => {
+        this.setState({
+            popperStatus: !this.state.popperStatus
+        })
+        const { data, cart } = this.state;
+        let disabled = false;
+        for ( let i=0; i<cart.length; i++ ){
+            if ( data.indexOf(cart[i].Name) === -1 || cart[i].Name === '' || cart[i].Qty === '' ){
+                disabled = true;
+                break;
+            }
+            axios.post('/item/detail', {Name: cart[i].Name}).then((res) => {
+                this.setState({
+                    cart: this.state.cart.map((c, index) => {
+                            if (index !== i) return c;
+                    return {...c, 'Unit': res[0].Unit }
+                })});
+                console.log(res[0].Name);
+            })
+        }
+        this.setState({
+            submitDisabled: disabled
+        })
+
+      }
+
     componentDidMount(){
         this.addItem();
     }
@@ -82,7 +118,7 @@ class Purchase extends Component {
        
 
     render() {
-        const { data, cart } = this.state;
+        const { data, cart, popperStatus, submitDisabled } = this.state;
         return (
             <div>
             {
@@ -95,7 +131,28 @@ class Purchase extends Component {
                 ))
             }
             <MyFloatingButton onClick={this.addItem} />
-            <MyFloatingButton onClick={this.submitItem} done/>
+            <MyFloatingButton onClick={this.handleClick} done  disabled={cart.length ? false : true }   />
+                <Dialog
+                    open={popperStatus}
+                    onClose={this.handleClick}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    fullWidth
+                    maxWidth='md'
+                >
+                    <DialogTitle id="alert-dialog-title">{"Confirm Items"}</DialogTitle>
+                    <DialogContent>
+                        <ItemPopup data={data} cart={cart} />
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={this.handleClick} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.submitItem} color="primary" autoFocus disabled={submitDisabled} >
+                        Submit
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }
