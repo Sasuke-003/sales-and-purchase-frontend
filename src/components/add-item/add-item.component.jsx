@@ -26,7 +26,9 @@ class AddItem extends Component {
 
             cart : [ ],
 
-            popperStatus : false
+            popperStatus : false,
+
+            submitDisabled : false
         }
 
     }
@@ -35,6 +37,18 @@ class AddItem extends Component {
         this.setState({
             popperStatus: !this.state.popperStatus
         })
+        const { data, cart } = this.state;
+        let disabled = false;
+        for ( let i=0; i<cart.length; i++ ){
+            if ( data.indexOf(cart[i].Name) !== -1 || cart[i].Name === '' || cart[i].Qty === '' || cart[i].Unit === '' ){
+                disabled = true;
+                break;
+            }
+        }
+        this.setState({
+            submitDisabled: disabled
+        })
+
       }
     
      
@@ -115,7 +129,7 @@ class AddItem extends Component {
 
 
     render() {
-        const { data, cart, popperStatus } = this.state;
+        const { data, cart, popperStatus, submitDisabled } = this.state;
         return (
             <div>
                 {
@@ -134,6 +148,8 @@ class AddItem extends Component {
                     onClose={this.handleClick}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
+                    fullWidth
+                    maxWidth='md'
                 >
                     <DialogTitle id="alert-dialog-title">{"Confirm Items"}</DialogTitle>
                     <DialogContent>
@@ -143,7 +159,7 @@ class AddItem extends Component {
                     <Button onClick={this.handleClick} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={this.submitItem} color="primary" autoFocus>
+                    <Button onClick={this.submitItem} color="primary" autoFocus disabled={submitDisabled} >
                         Submit
                     </Button>
                     </DialogActions>
