@@ -4,6 +4,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 
+const countOccurrences = (arr, val) => arr.reduce((a, v) => (v.Name === val ? a + 1 : a), 0);
+
 const ItemPopup = ({ data, cart, text }) => {
     return (
         <div>
@@ -14,7 +16,7 @@ const ItemPopup = ({ data, cart, text }) => {
                     <ListItem  key ={index} >
                         <ListItemText
                             primary={`${c.Name}       ${c.Qty} ${c.Unit}`}
-                            secondary={`${data.indexOf(c.Name) !== -1 ? "" : "This item is Unavailable!"}`}
+                            secondary={`${data.indexOf(c.Name) === -1 ? "This item is Unavailable!" : countOccurrences(cart, c.Name) > 1 ? "This item is already in cart!" : ""  }`}
                             secondaryTypographyProps={{style: {color:'red'}}}
                             primaryTypographyProps={{style: {fontSize:'20px'}}}
                         />

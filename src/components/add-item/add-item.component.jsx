@@ -15,6 +15,7 @@ import AddItemPopup from '../add-item-popup/add-item-popup.component';
 let timerID ;
 const timeOutValue = 100 ;
 let s = new Set();
+const countOccurrences = (arr, val) => arr.reduce((a, v) => (v.Name === val ? a + 1 : a), 0);
 
 class AddItem extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class AddItem extends Component {
         const { data, cart } = this.state;
         let disabled = false;
         for ( let i=0; i<cart.length; i++ ){
-            if ( data.indexOf(cart[i].Name) !== -1 || cart[i].Name === '' || cart[i].Qty === '' || cart[i].Unit === '' ){
+            if ( data.indexOf(cart[i].Name) !== -1 || cart[i].Name === '' || cart[i].Qty === '' || cart[i].Unit === '' || countOccurrences(cart, cart[i].Name) > 1  ){
                 disabled = true;
                 break;
             }

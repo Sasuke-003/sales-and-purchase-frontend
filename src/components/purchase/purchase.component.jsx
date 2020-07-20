@@ -16,6 +16,9 @@ let timerID ;
 const timeOutValue = 500 ;
 let s = new Set();
 
+const countOccurrences = (arr, val) => arr.reduce((a, v) => (v.Name === val ? a + 1 : a), 0);
+
+
 class Purchase extends Component {
     constructor(props) {
         super(props);
@@ -37,18 +40,10 @@ class Purchase extends Component {
         const { data, cart } = this.state;
         let disabled = false;
         for ( let i=0; i<cart.length; i++ ){
-            if ( data.indexOf(cart[i].Name) === -1 || cart[i].Name === '' || cart[i].Qty === '' ){
+            if ( data.indexOf(cart[i].Name) === -1 || cart[i].Name === '' || cart[i].Qty === '' || countOccurrences(cart, cart[i].Name) > 1  ){
                 disabled = true;
                 break;
             }
-            axios.post('/item/detail', {Name: cart[i].Name}).then((res) => {
-                this.setState({
-                    cart: this.state.cart.map((c, index) => {
-                            if (index !== i) return c;
-                    return {...c, 'Unit': res[0].Unit }
-                })});
-                console.log(res[0].Name);
-            })
         }
         this.setState({
             submitDisabled: disabled
@@ -86,29 +81,42 @@ class Purchase extends Component {
                 return {...c, [event.target.name]: value }
             })
         });
-        if ( timerID ) clearTimeout( timerID ) ;
-        timerID = setTimeout( () =>{
-            timerID = undefined ;
-            const searchword = value;
-            if (searchword !== ''){
-                axios.post('/item', {"S":searchword}).then(
-                    (res) => {
-                        for(let i=0; i<res.length; i++){
-                            if(!s.has(res[i].Name)){
-                                this.setState({
-                                    data: this.state.data.concat(res[i].Name)
-                                });
-                                s.add(res[i].Name);
+        if (event.target.name === 'Name'){
+            if ( timerID ) clearTimeout( timerID ) ;
+            timerID = setTimeout( () =>{
+                timerID = undefined ;
+                const searchword = value;
+                if (  searchword !== ''){
+                    axios.post('/item', {"S":searchword}).then(
+                        (res) => {
+                            for(let i=0; i<res.length; i++){
+                                if(!s.has(res[i].Name)){
+                                    this.setState({
+                                        data: this.state.data.concat(res[i].Name)
+                                    });
+                                    s.add(res[i].Name);
+                                }
                             }
                         }
-                    }
+        
+                    ).catch((error) => {
+                        console.log(error)
+                    })
+                }
     
-                ).catch((error) => {
-                    console.log(error)
-                })
-            }
- 
-        } , timeOutValue ) ;
+            } , timeOutValue ) ;
+        }
+        if (this.state.data.indexOf(value) !== -1){
+            axios.post('/item/detail', {Name: value}).then((res) => {
+                console.log(res);
+                this.setState({
+                    cart: this.state.cart.map((c) => {
+                            if (c.id !== id) return c;
+                    return {...c, 'Unit': res[0].Unit }
+                })});
+                console.log(res[0].Name);
+            })
+        }
     }
 
     submitItem = () => {
