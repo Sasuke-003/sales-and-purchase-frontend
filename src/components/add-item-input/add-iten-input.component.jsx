@@ -20,7 +20,7 @@ class AddItemTable extends React.Component {
   }
 
   render(){
-    const { data, item, deleteItem, index, handleChange } = this.props;
+    const { data, item, deleteItem, index, handleChange, handleOtherChange } = this.props;
     return(
       <div className='item' >
         <Grid container spacing={1} tent={'center'} justify={'center'}>
@@ -44,7 +44,7 @@ class AddItemTable extends React.Component {
               key={item.id+2}
               name='Qty'
               value={item.Qty}
-              onChange={(event) => handleChange(event, index, item.id)}
+              onChange={(event) => handleOtherChange(event, index, item.id)}
               type='number'
               label='QUANTITY'
               fullWidth
@@ -60,7 +60,7 @@ class AddItemTable extends React.Component {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={item.Unit}
-                        onChange={(event) => handleChange(event, index, item.id)}
+                        onChange={(event) => handleOtherChange(event, index, item.id)}
                     >
                     <MenuItem value={'UNITS'}>units</MenuItem>
                     <MenuItem value={'KG'}>kg</MenuItem>

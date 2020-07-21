@@ -17,7 +17,7 @@ const AddItemPopup = ({ data, cart, text }) => {
                     <ListItem  key ={index} >
                         <ListItemText
                             primary={`${c.Name}       ${c.Qty} ${c.Unit}`}
-                            secondary={`${data.indexOf(c.Name) !== -1 ? "This item is already added!" : countOccurrences(cart, c.Name) > 1 ? "This item is already in cart!" : ""  }`}
+                            secondary={`${data.indexOf(c.Name) !== -1 ? "This item is already added!" : countOccurrences(cart, c.Name) > 1 ? "This item is already in cart!" : c.Qty === '' ? "Quantity cannot be empty!" : ""  }`}
                             secondaryTypographyProps={{style: {color:'red'}}}
                             primaryTypographyProps={{style: {fontSize:'20px'}}}
                         />

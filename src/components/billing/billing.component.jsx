@@ -37,14 +37,14 @@ class Billing extends Component {
 
     }
 
-    handleClick = (event) => {
+    handleOpen = (event) => {
         this.setState({
-            popperStatus: !this.state.popperStatus
+            popperStatus: true
         })
         const { data, cart } = this.state;
         let disabled = false;
         for ( let i=0; i<cart.length; i++ ){
-            if ( data.indexOf(cart[i].Name) === -1 || cart[i].Name === '' || cart[i].Qty === '' || countOccurrences(cart, cart[i].Name) > 1  ){
+            if ( data.indexOf(cart[i].Name) === -1 || cart[i].Name === '' || cart[i].Qty === '' || cart[i].Unit === '' || countOccurrences(cart, cart[i].Name) > 1  ){
                 disabled = true;
                 break;
             }
@@ -55,9 +55,16 @@ class Billing extends Component {
 
       }
     
+     handleClose = (event) => {
+        this.setState({
+            popperStatus: false
+        })
+     }
+    
     
     componentDidMount(){
         this.addItem();
+        s.clear();
     }
 
 
@@ -67,6 +74,7 @@ class Billing extends Component {
                             Name: '',
                             Qty: '',
                             Unit: '',
+                            AQty: '',
                             id: Date.now()
                     }]
         });
@@ -76,6 +84,16 @@ class Billing extends Component {
         this.setState({
             cart: this.state.cart.filter((c) => c.id !== id ),
         })
+    }
+
+    handleOtherChange = (event, index, id) => {
+        const { value } = event.target;
+        this.setState({
+            cart: this.state.cart.map((c) => {
+                if (c.id !== id) return c;
+                return {...c, [event.target.name]: value }
+            })
+        });
     }
 
     handleChange = (event, index, id) => {
@@ -117,7 +135,7 @@ class Billing extends Component {
                 this.setState({
                     cart: this.state.cart.map((c) => {
                             if (c.id !== id) return c;
-                    return {...c, 'Unit': res[0].Unit }
+                    return {...c, 'AQty': res[0].Qty,'Unit': res[0].Unit }
                 })});
                 console.log(res[0].Name);
             })
@@ -132,6 +150,7 @@ class Billing extends Component {
         //     console.log(cart[i]['units']);
         // }
         console.log(this.state);
+        this.handleClose();
     }
 
     render() {
@@ -142,16 +161,17 @@ class Billing extends Component {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
                         <ItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
+                        handleOtherChange={this.handleOtherChange}
                         /> 
                         <Divider /> 
                     </div>
                 ))
             }
             <MyFloatingButton onClick={this.addItem} />
-            <MyFloatingButton onClick={this.handleClick} done  disabled={cart.length ? false : true }   />
+            <MyFloatingButton onClick={this.handleOpen} done  disabled={cart.length ? false : true }   />
                 <Dialog
                     open={popperStatus}
-                    onClose={this.handleClick}
+                    onClose={this.handleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                     fullWidth
@@ -162,7 +182,7 @@ class Billing extends Component {
                         <ItemPopup data={data} cart={cart} />
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={this.handleClick} color="primary">
+                    <Button onClick={this.handleClose} color="primary">
                         Cancel
                     </Button>
                     <Button onClick={this.submitItem} color="primary" autoFocus disabled={submitDisabled} >

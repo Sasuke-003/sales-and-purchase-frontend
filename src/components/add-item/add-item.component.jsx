@@ -33,9 +33,9 @@ class AddItem extends Component {
 
     }
 
-     handleClick = (event) => {
+     handleOpen = (event) => {
         this.setState({
-            popperStatus: !this.state.popperStatus
+            popperStatus: true
         })
         const { data, cart } = this.state;
         let disabled = false;
@@ -51,11 +51,19 @@ class AddItem extends Component {
 
       }
     
+     handleClose = (event) => {
+        this.setState({
+            popperStatus: false
+        })
+     }
+    
+    
      
     
     
     componentDidMount(){
         this.addItem();
+        s.clear();
     }
 
 
@@ -74,6 +82,16 @@ class AddItem extends Component {
         this.setState({
             cart: this.state.cart.filter((c) => c.id !== id ),
         })
+    }
+
+    handleOtherChange = (event, index, id) => {
+        const { value } = event.target;
+        this.setState({
+            cart: this.state.cart.map((c) => {
+                if (c.id !== id) return c;
+                return {...c, [event.target.name]: value }
+            })
+        });
     }
 
     handleChange = (event, index, id) => {
@@ -125,6 +143,7 @@ class AddItem extends Component {
         ));
         this.setState({cart: []})
         console.log(this.state.cart);
+        this.handleClose();
     }
 
 
@@ -136,16 +155,17 @@ class AddItem extends Component {
                     cart.map((item, index) => (
                         <div key={item.id} className='item-container'>
                             <AddItemTable data={data} item={item} deleteItem={this.deleteItem} index={index} handleChange={this.handleChange}
+                            handleOtherChange={this.handleOtherChange}
                             /> 
                             <Divider /> 
                         </div>
                     ))
                 }
                 <MyFloatingButton onClick={this.addItem} />
-                <MyFloatingButton onClick={this.handleClick} done  disabled={cart.length ? false : true }   />
+                <MyFloatingButton onClick={this.handleOpen} done  disabled={cart.length ? false : true }   />
                 <Dialog
                     open={popperStatus}
-                    onClose={this.handleClick}
+                    onClose={this.handleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                     fullWidth
@@ -156,7 +176,7 @@ class AddItem extends Component {
                         <AddItemPopup data={data} cart={cart} />
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={this.handleClick} color="primary">
+                    <Button onClick={this.handleClose} color="primary">
                         Cancel
                     </Button>
                     <Button onClick={this.submitItem} color="primary" autoFocus disabled={submitDisabled} >

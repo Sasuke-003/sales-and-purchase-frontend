@@ -17,14 +17,14 @@ class ItemTable extends React.Component {
   }
 
   render(){
-    const { data, item, deleteItem, index, handleChange } = this.props;
+    const { data, item, deleteItem, index, handleChange, handleOtherChange } = this.props;
     return(
       <div className='item' >
         <Grid container spacing={1} tent={'center'} justify={'center'}>
           <Grid item xs={12} sm={1}  >
             <div className='item-heading'><MyTypography className='item-heading' variant='h4'>{index+1}</MyTypography></div>
           </Grid>
-          <Grid item xs={10} sm={4} >
+          <Grid item xs={10} sm={3} >
             <InputField 
               key={item.id+1}
               name='Name'
@@ -41,19 +41,30 @@ class ItemTable extends React.Component {
               key={item.id+2}
               name='Qty'
               value={item.Qty}
-              onChange={(event) => handleChange(event, index, item.id)}
+              onChange={(event) => handleOtherChange(event, index, item.id)}
               type='number'
               label='QUANTITY'
               fullWidth
             />
           </Grid>
-          <Grid item xs={10} sm={3}>
+          <Grid item xs={10} sm={2}>
             <InputField  
               key={item.id+3}
               name='Unit'
               value={item.Unit}
-              onChange={(event) => handleChange(event, index, item.id)}
+              onChange={(event) => handleOtherChange(event, index, item.id)}
               label="Units"
+              fullWidth
+              disabled
+            />
+          </Grid>
+          <Grid item xs={10} sm={2}>
+            <InputField  
+              key={item.id+4}
+              name='AQty'
+              value={item.AQty}
+              onChange={(event) => handleOtherChange(event, index, item.id)}
+              label="AVAILABLE"
               fullWidth
               disabled
             />
