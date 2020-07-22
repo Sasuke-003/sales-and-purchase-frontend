@@ -6,12 +6,13 @@ const validator = {
     "/user/logout" : user.logout,
     "/user/signup" : user.signup,
 
+    "/item"        : item.search,
     "/item/add"    : item.add   , 
-    "/item" : item.search,
     "/item/detail" : item.detail,
     "/item/update" : item.update,
 
-    "/seller/add"  : seller.add ,
+    "/seller"      : seller.search ,
+    "/seller/add"  : seller.add    ,
 
     "/sale/create"     : sale.create,
     // "/sale/list-all" : sale.listAll,
