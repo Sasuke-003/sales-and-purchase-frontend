@@ -107,37 +107,30 @@ class Purchase extends Component {
                 [name]: value
         });
         if ( timerID ) clearTimeout( timerID ) ;
-        timerID = setTimeout( () =>{
+        timerID = setTimeout( async () =>{
             timerID = undefined ;
             const searchword = value;
             if (  searchword !== ''){
-                axios.post('/seller', {"S":searchword}).then(
-                    (res) => {
-                        for(let i=0; i<res.length; i++){
-                            if(!sd.has(res[i].Name)){
-                                this.setState({
-                                    sellerData: this.state.sellerData.concat(res[i].Name)
-                                });
-                                sd.add(res[i].Name);
-                            }
-                        }
+                const res = await axios.post('/seller', {"S":searchword})
+                for(let i=0; i<res.length; i++){
+                    if(!sd.has(res[i].Name)){
+                        this.setState({
+                            sellerData: this.state.sellerData.concat(res[i].Name)
+                        });
+                        sd.add(res[i].Name);
                     }
-    
-                ).catch((error) => {
-                    console.log(error)
-                })
+                }
+                if (value === ''){
+                    error = true;
+                    helperText = 'Seller Name cannot be empty!';
+                }
+                else if (this.state.sellerData.indexOf(value) === -1) {
+                    error = true;
+                    helperText = 'This seller is not Available!';
+                }
             }
 
         } , timeOutValue ) ;
-       
-        if (value === ''){
-            error = true;
-            helperText = 'Seller Name cannot be empty!';
-        }
-        else if (this.state.sellerData.indexOf(value) === -1){
-            error = true;
-            helperText = 'This seller is not Available!';
-        }
         this.setState({
             Error: error,
             helperText: helperText
