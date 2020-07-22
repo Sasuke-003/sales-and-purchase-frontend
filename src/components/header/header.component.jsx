@@ -22,6 +22,7 @@ import ShowChartIcon from '@material-ui/icons/ShowChart';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import AddBoxIcon from '@material-ui/icons/AddBox';
 import Axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -102,6 +103,15 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
             <ListItem button key={4} onClick={() => {history.push('/signup')}} >
               <ListItemIcon> <PersonAddIcon /> </ListItemIcon>
               <ListItemText primary='ADD USER' />
+            </ListItem>
+          :
+            null
+        }
+        {
+          currentUser && currentUser.Type === 'a' ?
+            <ListItem button key={5} onClick={() => {history.push('/addseller')}} >
+              <ListItemIcon> <AddBoxIcon /> </ListItemIcon>
+              <ListItemText primary='ADD SELLER' />
             </ListItem>
           :
             null

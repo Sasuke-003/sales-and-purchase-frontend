@@ -9,6 +9,7 @@ import PurchasePage from './pages/purchase-page/purchase-page'
 import StockPage from './pages/stock-page/stock-page'
 import SignUpPage from './pages/sign-up-page/sign-up-page';
 import AddItemPage from './pages/add-item-page/add-item-page';
+import AddSellerPage from './pages/add-seller/add-seller-page';
 
 class App extends React.Component {
 // componentWillUnmount() {
@@ -31,6 +32,8 @@ class App extends React.Component {
             (<SignUpPage />) : (<Redirect to='/' />) } />  
           <Route exact path='/additem' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
             (<AddItemPage />) : (<Redirect to='/' />) } />
+            <Route exact path='/addseller' render={() => this.props.currentUser && this.props.currentUser.Type === 'a' ? 
+            (<AddSellerPage />) : (<Redirect to='/' />) } />
         </Switch>
       </div>
     );
