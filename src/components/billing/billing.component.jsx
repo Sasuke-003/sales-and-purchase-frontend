@@ -135,9 +135,8 @@ class Billing extends Component {
                 this.setState({
                     cart: this.state.cart.map((c) => {
                             if (c.id !== id) return c;
-                    return {...c, 'AQty': res[0].Qty,'Unit': res[0].Unit }
+                    return {...c, 'AQty': res.Qty,'Unit': res.Unit }
                 })});
-                console.log(res[0].Name);
             })
         }
     }

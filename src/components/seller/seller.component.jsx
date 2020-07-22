@@ -20,7 +20,7 @@ class Seller extends Component {
             Name: '',
             Error: false,
             helperText: '',
-            data: ''
+            data: []
         };
 
     }
@@ -30,9 +30,10 @@ class Seller extends Component {
     }
 
     handleChange = event => {
+        let error = false;
+        let helperText = '';
         const { name, value } = event.target;
         this.setState({
-                ...this.state,
                 [name]: value
         });
         if ( timerID ) clearTimeout( timerID ) ;
@@ -58,7 +59,18 @@ class Seller extends Component {
             }
 
         } , timeOutValue ) ;
-        
+        if (this.state.data.indexOf(value) !== -1){
+            error = true;
+            helperText = 'This Seller is already added';
+        }
+        else if(value === ''){
+            error = true;
+            helperText = 'Seller name cannot be empty';
+        }
+        this.setState({
+            Error: error,
+            helperText: helperText
+        })
     }
 
     handleSubmit = (event) => {
@@ -66,13 +78,18 @@ class Seller extends Component {
         const SellerData = {
             Name: this.state.Name
         }
-        if (!this.state.isPasswordError){
+        if (!this.state.Error){
             axios.post( '/seller/add', SellerData)
             .then((res) => {
-                alert("successfully Registered")      
+                alert("successfully Registered")   
+                this.setState({
+                    Name: '',
+                    Error: false,
+                    helperText: '',
+                })   
             })
             .catch((error) => {
-                console.log('gone')
+                console.log('NOT ADDED')
             });
         }
         else{

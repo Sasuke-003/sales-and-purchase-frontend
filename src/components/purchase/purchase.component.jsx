@@ -11,10 +11,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ItemPopup from '../popup/popup.component';
+import MyTextField from '../my-text-field/my-text-field'
 
 let timerID ;
 const timeOutValue = 500 ;
 let s = new Set();
+let sd = new Set();
 
 const countOccurrences = (arr, val) => arr.reduce((a, v) => (v.Name === val ? a + 1 : a), 0);
 
@@ -24,8 +26,12 @@ class Purchase extends Component {
         super(props);
         
         this.state={
+            sellerName: '',
             data : [ ],
             cart : [ ],
+            Error: true,
+            sellerData: [],
+            helperText: 'Seller name cannot be empty!',
 
             popperStatus : false,
 
@@ -61,6 +67,7 @@ class Purchase extends Component {
     componentDidMount(){
         this.addItem();
         s.clear();
+        sd.clear();
     }
 
 
@@ -90,6 +97,51 @@ class Purchase extends Component {
                 return {...c, [event.target.name]: value }
             })
         });
+    }
+
+    handleSellerChange = event => {
+        let error = false;
+        let helperText = '';
+        const { name, value } = event.target;
+        this.setState({
+                [name]: value
+        });
+        if ( timerID ) clearTimeout( timerID ) ;
+        timerID = setTimeout( () =>{
+            timerID = undefined ;
+            const searchword = value;
+            if (  searchword !== ''){
+                axios.post('/seller', {"S":searchword}).then(
+                    (res) => {
+                        for(let i=0; i<res.length; i++){
+                            if(!sd.has(res[i].Name)){
+                                this.setState({
+                                    sellerData: this.state.sellerData.concat(res[i].Name)
+                                });
+                                sd.add(res[i].Name);
+                            }
+                        }
+                    }
+    
+                ).catch((error) => {
+                    console.log(error)
+                })
+            }
+
+        } , timeOutValue ) ;
+       
+        if (value === ''){
+            error = true;
+            helperText = 'Seller Name cannot be empty!';
+        }
+        else if (this.state.sellerData.indexOf(value) === -1){
+            error = true;
+            helperText = 'This seller is not Available!';
+        }
+        this.setState({
+            Error: error,
+            helperText: helperText
+        })
     }
 
     handleChange = (event, index, id) => {
@@ -131,23 +183,46 @@ class Purchase extends Component {
                 this.setState({
                     cart: this.state.cart.map((c) => {
                             if (c.id !== id) return c;
-                    return {...c, 'AQty': res[0].Qty,'Unit': res[0].Unit }
+                    return {...c, 'AQty': res.Qty,'Unit': res.Unit }
                 })});
             })
         }
     }
 
-    submitItem = () => {
+    submitItem = async () => {
+        let newCart = [];
+        this.state.cart.map((c) => (
+            newCart.push({Name: c.Name, Qty: c.Qty})
+         ));
+        const PurchaseData = {
+            SellerName: this.state.sellerName,
+            Items: newCart
+        }
+        await axios.post('/purchase/create', PurchaseData);
+        this.setState({cart: []})
         this.handleClose();
+        alert("Successfully Purchased")
     }
 
 
        
 
     render() {
-        const { data, cart, popperStatus, submitDisabled } = this.state;
+        const { Name, data, cart, popperStatus, submitDisabled, helperText, sellerData, Error } = this.state;
         return (
             <div>
+            <MyTextField 
+                key={0}
+                className='col-4 col-s-4'
+                name='sellerName'
+                value={Name}
+                onChange={this.handleSellerChange}
+                type='text'
+                label='SELLER NAME'
+                error={Error}
+                helperText={helperText}
+                datalist={sellerData}
+                />
             {
                 cart.map((item, index) => (
                     <div key={item.id} className='item-container'>
@@ -159,7 +234,7 @@ class Purchase extends Component {
                 ))
             }
             <MyFloatingButton onClick={this.addItem} />
-            <MyFloatingButton onClick={this.handleOpen} done  disabled={cart.length ? false : true }   />
+            <MyFloatingButton onClick={this.handleOpen} done  disabled={cart.length && !Error ? false : true }   />
                 <Dialog
                     open={popperStatus}
                     onClose={this.handleClose}

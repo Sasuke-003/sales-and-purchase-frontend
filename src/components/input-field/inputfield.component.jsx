@@ -25,9 +25,12 @@ class  InputField extends React.Component {
         return (
             <ThemeProvider theme={theme}>
                 <div className='text-field'>
+                {
+                    console.log(datalist)
+                  }
                     {
                         datalist ? 
-                            <datalist id='datalist1'>
+                            <datalist id='datalist2'>
                                 {
                                     datalist.map((option, index) => (
                                         <option key={index} value={option} />
@@ -39,7 +42,7 @@ class  InputField extends React.Component {
                     }
                     {
                         datalist ?
-                            <TextField inputProps={{list: 'datalist1'}} autoComplete={'off'} value={value} {...otherProps}  />    
+                            <TextField inputProps={{list: 'datalist2'}} autoComplete={'off'} value={value} {...otherProps}  />    
                         :
                             <TextField autoComplete={'off'} value={value} {...otherProps}  />
                     }

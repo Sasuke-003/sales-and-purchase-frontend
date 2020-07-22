@@ -19,6 +19,7 @@ class ItemTable extends React.Component {
   render(){
     const { data, item, deleteItem, index, handleChange, handleOtherChange } = this.props;
     return(
+      
       <div className='item' >
         <Grid container spacing={1} tent={'center'} justify={'center'}>
           <Grid item xs={12} sm={1}  >
