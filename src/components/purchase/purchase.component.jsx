@@ -120,21 +120,20 @@ class Purchase extends Component {
                         sd.add(res[i].Name);
                     }
                 }
-                if (value === ''){
-                    error = true;
-                    helperText = 'Seller Name cannot be empty!';
-                }
-                else if (this.state.sellerData.indexOf(value) === -1) {
+                if (this.state.sellerData.indexOf(value) === -1) {
                     error = true;
                     helperText = 'This seller is not Available!';
                 }
+            }else {
+                error = true;
+                helperText = 'Seller name cannot be empty!';
             }
 
+            this.setState({
+                Error: error,
+                helperText: helperText
+            })
         } , timeOutValue ) ;
-        this.setState({
-            Error: error,
-            helperText: helperText
-        })
     }
 
     handleChange = (event, index, id) => {
@@ -147,12 +146,11 @@ class Purchase extends Component {
         });
         if (event.target.name === 'Name'){
             if ( timerID ) clearTimeout( timerID ) ;
-            timerID = setTimeout( () =>{
+            timerID = setTimeout( async () =>{
                 timerID = undefined ;
                 const searchword = value;
                 if (  searchword !== ''){
-                    axios.post('/item', {"S":searchword}).then(
-                        (res) => {
+                    const res = await axios.post('/item', {"S":searchword})
                             for(let i=0; i<res.length; i++){
                                 if(!s.has(res[i].Name)){
                                     this.setState({
@@ -161,24 +159,18 @@ class Purchase extends Component {
                                     s.add(res[i].Name);
                                 }
                             }
-                        }
-        
-                    ).catch((error) => {
-                        console.log(error)
-                    })
+                            if (this.state.data.indexOf(value) !== -1){
+                                axios.post('/item/detail', {Name: value}).then((res) => {
+                                    this.setState({
+                                        cart: this.state.cart.map((c) => {
+                                                if (c.id !== id) return c;
+                                        return {...c, 'AQty': res.Qty,'Unit': res.Unit }
+                                    })});
+                                })
+                            }
                 }
-    
+                
             } , timeOutValue ) ;
-        }
-        if (this.state.data.indexOf(value) !== -1){
-            axios.post('/item/detail', {Name: value}).then((res) => {
-                console.log(res);
-                this.setState({
-                    cart: this.state.cart.map((c) => {
-                            if (c.id !== id) return c;
-                    return {...c, 'AQty': res.Qty,'Unit': res.Unit }
-                })});
-            })
         }
     }
 

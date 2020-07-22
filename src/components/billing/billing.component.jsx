@@ -106,12 +106,11 @@ class Billing extends Component {
         });
         if (event.target.name === 'Name'){
             if ( timerID ) clearTimeout( timerID ) ;
-            timerID = setTimeout( () =>{
+            timerID = setTimeout( async () =>{
                 timerID = undefined ;
                 const searchword = value;
                 if (  searchword !== ''){
-                    axios.post('/item', {"S":searchword}).then(
-                        (res) => {
+                    const res = await axios.post('/item', {"S":searchword})
                             for(let i=0; i<res.length; i++){
                                 if(!s.has(res[i].Name)){
                                     this.setState({
@@ -120,25 +119,21 @@ class Billing extends Component {
                                     s.add(res[i].Name);
                                 }
                             }
-                        }
-        
-                    ).catch((error) => {
-                        console.log(error)
-                    })
+                            if (this.state.data.indexOf(value) !== -1){
+                                axios.post('/item/detail', {Name: value}).then((res) => {
+                                    console.log(res);
+                                    this.setState({
+                                        cart: this.state.cart.map((c) => {
+                                                if (c.id !== id) return c;
+                                        return {...c, 'AQty': res.Qty,'Unit': res.Unit }
+                                    })});
+                                })
+                            }
                 }
-    
+                
             } , timeOutValue ) ;
         }
-        if (this.state.data.indexOf(value) !== -1){
-            axios.post('/item/detail', {Name: value}).then((res) => {
-                console.log(res);
-                this.setState({
-                    cart: this.state.cart.map((c) => {
-                            if (c.id !== id) return c;
-                    return {...c, 'AQty': res.Qty,'Unit': res.Unit }
-                })});
-            })
-        }
+       
     }
 
     submitItem = () => {

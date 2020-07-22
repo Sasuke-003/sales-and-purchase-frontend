@@ -102,29 +102,25 @@ class AddItem extends Component {
                 return {...c, [event.target.name]: value }
             })
         });
-        if ( timerID ) clearTimeout( timerID ) ;
-        timerID = setTimeout( () =>{
-            timerID = undefined ;
-            const searchword = value;
-            if (searchword !== ''){
-                axios.post('/item', {"S":searchword}).then(
-                    (res) => {
-                        for(let i=0; i<res.length; i++){
-                            if(!s.has(res[i].Name)){
-                                this.setState({
-                                    data: this.state.data.concat(res[i].Name)
-                                });
-                                s.add(res[i].Name);
+        if (event.target.name === 'Name'){
+            if ( timerID ) clearTimeout( timerID ) ;
+            timerID = setTimeout( async () =>{
+                timerID = undefined ;
+                const searchword = value;
+                if (  searchword !== ''){
+                    const res = await axios.post('/item', {"S":searchword})
+                            for(let i=0; i<res.length; i++){
+                                if(!s.has(res[i].Name)){
+                                    this.setState({
+                                        data: this.state.data.concat(res[i].Name)
+                                    });
+                                    s.add(res[i].Name);
+                                }
                             }
-                        }
-                    }
-    
-                ).catch((error) => {
-                    console.log(error)
-                })
-            }
- 
-        } , timeOutValue ) ;
+                }
+                
+            } , timeOutValue ) ;
+        }
     }
 
     submitItem = () => {

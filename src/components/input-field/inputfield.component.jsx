@@ -25,9 +25,6 @@ class  InputField extends React.Component {
         return (
             <ThemeProvider theme={theme}>
                 <div className='text-field'>
-                {
-                    console.log(datalist)
-                  }
                     {
                         datalist ? 
                             <datalist id='datalist2'>
