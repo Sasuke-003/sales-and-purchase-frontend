@@ -15,12 +15,12 @@ const validator = {
     "/seller/add"  : seller.add    ,
 
     "/sale/create"     : sale.create,
-    // "/sale/list-all" : sale.listAll,
-    // "/sale/list-my"  : sale.listMy,
+    "/sale/list-all" : sale.listAll,
+    "/sale/list-my"  : sale.listMy,
 
     "/purchase/create"     : purchase.create,
-    // "/purchase/list-all" : purchase.listAll,
-    // "/purchase/list-my"  : purchase.listMy,
+    "/purchase/list-all" : purchase.listAll,
+    "/purchase/list-my"  : purchase.listMy,
 
     "/auth/refresh-token" : auth.refreshToken,
     "/auth/access-token" : auth.accessToken,
