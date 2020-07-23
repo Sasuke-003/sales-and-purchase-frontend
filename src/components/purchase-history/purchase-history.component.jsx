@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import HistoryDisplay from '../history-display/history-display.component'
 import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
-import { connect } from 'react-redux'
+
 
 
 
@@ -17,15 +17,7 @@ class PurchaseHistory extends Component {
     }
 
     componentDidMount(){
-        const { currentUser } = this.props;
-        let url = '';
-        if (currentUser.Type === 'a'){
-            url = '/purchase/list-all';
-        }
-        else{
-            url = '/purchase/list-my';
-        }
-        axios.post(url, {P:this.state.page}).then((res) => {
+        axios.post('/purchase/list-all', {P:this.state.page}).then((res) => {
             this.setState({
                 history: res
             })}
@@ -58,4 +50,4 @@ const mapStatetoProps = state => ({
 });
 
 
-export default connect(mapStatetoProps)(PurchaseHistory);
+export default PurchaseHistory
