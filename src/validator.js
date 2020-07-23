@@ -18,7 +18,8 @@ const validator = {
     "/sale/list-all" : sale.listAll,
     "/sale/list-my"  : sale.listMy,
 
-    "/purchase/create"     : purchase.create,
+    "/purchase/create"   : purchase.create,
+    "/purchase/detail"   : purchase.detail,
     "/purchase/list-all" : purchase.listAll,
     "/purchase/list-my"  : purchase.listMy,
 
