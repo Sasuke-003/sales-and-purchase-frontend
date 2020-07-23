@@ -184,9 +184,9 @@ class Purchase extends Component {
             Items: newCart
         }
         await axios.post('/purchase/create', PurchaseData);
-        this.setState({cart: []})
+        this.setState({cart: [], sellerName: ''})
         this.handleClose();
-        alert("Successfully Purchased")
+        alert("Successfully Purchased") 
     }
 
 

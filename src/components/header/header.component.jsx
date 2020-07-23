@@ -68,6 +68,8 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
           <ListItemIcon> <ReceiptIcon /> </ListItemIcon>
           <ListItemText primary='BILLING' />
         </ListItem>
+        <ListItem div key={56}>
+        </ListItem>
         {
           currentUser && currentUser.Type === 'a' ?
             <ListItem button key={2} onClick={() => {history.push('/purchase')}} >
@@ -100,7 +102,7 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
       <List>
         {
           currentUser && currentUser.Type === 'a' ?
-            <ListItem button key={4} onClick={() => {history.push('/signup')}} >
+            <ListItem button key={5} onClick={() => {history.push('/signup')}} >
               <ListItemIcon> <PersonAddIcon /> </ListItemIcon>
               <ListItemText primary='ADD USER' />
             </ListItem>
@@ -109,7 +111,7 @@ const Header = ({ currentUser, setCurrentUser, history}) => {
         }
         {
           currentUser && currentUser.Type === 'a' ?
-            <ListItem button key={5} onClick={() => {history.push('/addseller')}} >
+            <ListItem button key={6} onClick={() => {history.push('/addseller')}} >
               <ListItemIcon> <AddBoxIcon /> </ListItemIcon>
               <ListItemText primary='ADD SELLER' />
             </ListItem>
