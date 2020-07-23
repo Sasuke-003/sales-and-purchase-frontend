@@ -2,30 +2,32 @@ const { user, item, seller, sale, purchase, auth } = require( './validator.confi
 
 const validator = {
 
-    "/user/login"  : user.login ,
+    "/user/login"  : user.login,
     "/user/logout" : user.logout,
     "/user/signup" : user.signup,
 
     "/item"        : item.search,
-    "/item/add"    : item.add   , 
+    "/item/add"    : item.add, 
     "/item/detail" : item.detail,
     "/item/update" : item.update,
 
-    "/seller"      : seller.search ,
-    "/seller/add"  : seller.add    ,
+    "/seller"      : seller.search,
+    "/seller/add"  : seller.add,
 
-    "/sale/create"     : sale.create,
+    "/sale/create"   : sale.create,
+    "/sale/detail"   : sale.detail,
+    "/sale/delete"   : sale.delete,
     "/sale/list-all" : sale.listAll,
     "/sale/list-my"  : sale.listMy,
 
     "/purchase/create"   : purchase.create,
     "/purchase/detail"   : purchase.detail,
+    "/purchase/delete"   : purchase.delete,
     "/purchase/list-all" : purchase.listAll,
     "/purchase/list-my"  : purchase.listMy,
-    "/purchase/delete"   : purchase.delete,
 
     "/auth/refresh-token" : auth.refreshToken,
-    "/auth/access-token" : auth.accessToken,
+    "/auth/access-token"  : auth.accessToken,
     
     } ;
     
