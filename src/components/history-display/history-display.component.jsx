@@ -23,6 +23,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from 'axios';
+import ViewItemPopup from '../view-item-popup/view-item-popup.component'
 import { reqItemUnit } from '../../units'
 
 
@@ -40,6 +41,19 @@ constructor(props) {
     }
 }
 
+setHistoryData = async () => {
+    const res = await axios.post('/purchase/detail', {_id:this.props.purchaseHistory._id});
+    for(let i=0; i<res.Items.length;i++){
+        this.setState({
+            historyData: this.state.historyData.concat({
+                Name:res.Items[i].Name,
+                Qty:res.Items[i].Qty,
+                Unit:await reqItemUnit(res.Items[i].Name)
+            })
+        });
+    }
+}
+
 handleEditOpen = () => {
     this.setState({
         editPopper: true
@@ -54,33 +68,29 @@ handleEditClose = () => {
 handleDeleteOpen = () => {
     this.setState({
         deletePopper: true
-    })
+    });
+    this.setHistoryData();  
 }
 handleDeleteClose = () => {
     this.setState({
         deletePopper: false
+    });
+    this.setState({
+        historyData: []
     })
 }
 handleViewOpen = async () => {
     this.setState({
         viewPopper: true
     })
-    const res = await axios.post('/purchase/detail', {_id:this.props.purchaseHistory._id});
-    for(let i=0; i<res.length;i++){
-        this.setState({
-            historyData: this.state.historyData.concat({
-                Name:res.Items[i].Name,
-                Qty:res.Items[i].Qty,
-                Unit:reqItemUnit(res.Items[i].Name)
-            })
-        });
-    }
-    console.log(this.state);
-                            
+    this.setHistoryData();                      
 }
 handleViewClose = () => {
     this.setState({
         viewPopper: false
+    })
+    this.setState({
+        historyData: []
     })
 }
 
@@ -88,7 +98,7 @@ handleViewClose = () => {
 render(){
     const { purchaseHistory } = this.props;
 
-    const { deletePopper, editPopper, viewPopper } = this.state;
+    const { deletePopper, editPopper, viewPopper, historyData } = this.state;
     return (
         <Card >
             <CardContent>
@@ -153,7 +163,7 @@ render(){
                 >
                     <DialogTitle id="view-popup">{"ITEMS"}</DialogTitle>
                     <DialogContent>
-                    {purchaseHistory._id}
+                        <ViewItemPopup historyData={historyData} />
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={this.handleViewClose}  color="primary" autoFocus >
@@ -190,9 +200,9 @@ render(){
                     fullWidth
                     maxWidth='md'
                 >
-                    <DialogTitle id="delete-popup">{"The below items will be deleted!"}</DialogTitle>
+                    <DialogTitle id="delete-popup">{"The below purchased items will be deleted!"}</DialogTitle>
                     <DialogContent>
-                        delete
+                        <ViewItemPopup historyData={historyData} />
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={this.handleDeleteClose} color="primary">

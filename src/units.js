@@ -1,11 +1,13 @@
 import axios from 'axios';
 let m = new Map()
 
-export const reqItemUnit = (name) => {
+export const reqItemUnit = async  (name) => {
     if(!m.has(name)){
-        axios.post('/item/detail',{Name: name}).then((res) => {
-            m.set(name, res.Unit);
-        })
+        const res = await axios.post('/item/detail',{Name: name});
+        m.set(name, res.Unit);
+        return res.Unit;
+
+        
     }
     return m.get(name);
 }
