@@ -16,7 +16,7 @@ class PurchaseHistory extends Component {
         }
     }
 
-    componentDidMount(){
+    setHistoryToState = () => {
         axios.post('/purchase/list-all', {P:this.state.page}).then((res) => {
             this.setState({
                 history: res
@@ -24,8 +24,10 @@ class PurchaseHistory extends Component {
             ).catch((error) => {
                 console.log(error)
             })
-            
-            
+    }
+
+    componentDidMount(){
+            this.setHistoryToState();
     }
     
     render() {
@@ -34,7 +36,7 @@ class PurchaseHistory extends Component {
                 {
                     this.state.history.map((h,) => (
                         <div key={h._id}>
-                            <HistoryDisplay purchaseHistory={h} />
+                            <HistoryDisplay purchaseHistory={h} setHistoryToState={this.setHistoryToState} />
                             <Divider />
                         </div>
                     ))

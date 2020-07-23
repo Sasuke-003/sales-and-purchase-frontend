@@ -25,6 +25,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from 'axios';
 import ViewItemPopup from '../view-item-popup/view-item-popup.component'
 import { reqItemUnit } from '../../units'
+import { mockComponent } from 'react-dom/test-utils';
+import moment from 'moment'
 
 
 let m = new Map()
@@ -42,16 +44,22 @@ constructor(props) {
 }
 
 setHistoryData = async () => {
-    const res = await axios.post('/purchase/detail', {_id:this.props.purchaseHistory._id});
-    for(let i=0; i<res.Items.length;i++){
-        this.setState({
-            historyData: this.state.historyData.concat({
-                Name:res.Items[i].Name,
-                Qty:res.Items[i].Qty,
-                Unit:await reqItemUnit(res.Items[i].Name)
-            })
-        });
+    if(this.state.historyData.length === 0){
+        const res = await axios.post('/purchase/detail', {_id:this.props.purchaseHistory._id});
+        for(let i=0; i<res.Items.length;i++){
+            this.setState({
+                historyData: this.state.historyData.concat({
+                    Name:res.Items[i].Name,
+                    Qty:res.Items[i].Qty,
+                    Unit:await reqItemUnit(res.Items[i].Name)
+                })
+            });
+        }
     }
+}
+
+idToDate = (id) => {
+    return moment(parseInt(id.substring(0,8), 16)* 1000).format("DD/MM/YYYY-hh:mm:ss A");
 }
 
 handleEditOpen = () => {
@@ -75,9 +83,7 @@ handleDeleteClose = () => {
     this.setState({
         deletePopper: false
     });
-    this.setState({
-        historyData: []
-    })
+    
 }
 handleViewOpen = async () => {
     this.setState({
@@ -89,8 +95,12 @@ handleViewClose = () => {
     this.setState({
         viewPopper: false
     })
-    this.setState({
-        historyData: []
+}
+handleDeleteClick = () => {
+    axios.post('/purchase/delete', {_id:this.props.purchaseHistory._id}).then((res)=>{
+        alert("Successfully Deleted");
+        this.handleDeleteClose();
+        this.props.setHistoryToState();
     })
 }
 
@@ -134,7 +144,7 @@ render(){
                             PURCHASE DATE
                         </TableCell>
                         <TableCell size="small">
-                            {purchaseHistory._id}
+                            {this.idToDate(purchaseHistory._id)}
                         </TableCell>
                     </TableRow>
                 </TableBody>
@@ -208,7 +218,7 @@ render(){
                     <Button onClick={this.handleDeleteClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={this.handleDeleteClose}  color="primary" autoFocus >
+                    <Button onClick={this.handleDeleteClick}  color="primary" autoFocus >
                         Delete
                     </Button>
                     </DialogActions>

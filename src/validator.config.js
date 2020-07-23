@@ -103,6 +103,10 @@ module.exports.purchase = {
     detail : Joi.object({
         _id: Joi.string().length(24)
     }),
+
+    delete : Joi.object({
+        _id: Joi.string().length(24)
+    }),
     
     listMy : Joi.object({
         P : Joi.number().required()

@@ -22,6 +22,7 @@ const validator = {
     "/purchase/detail"   : purchase.detail,
     "/purchase/list-all" : purchase.listAll,
     "/purchase/list-my"  : purchase.listMy,
+    "/purchase/delete"   : purchase.delete,
 
     "/auth/refresh-token" : auth.refreshToken,
     "/auth/access-token" : auth.accessToken,
