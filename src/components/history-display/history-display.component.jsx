@@ -18,16 +18,6 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-const useStyles = makeStyles({
-  root: {
-    
-
-  },
-  table: {
-    maxWidth: 650,
-  },
-});
-
 
 class HistoryDisplay extends React.Component {
 constructor(props) {
@@ -40,31 +30,46 @@ constructor(props) {
 
   
 render(){
-    const { classes, purchaseHistory } = this.props;
+    const { purchaseHistory } = this.props;
     return (
         <Card >
             <CardContent>
             <TableContainer>
-            <Table className={classes.table} aria-label="simple table">
+            <Table aria-label="simple table">
               <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row" size="small" padding='checkbox'>
-                      go
-                    </TableCell>
-                    <TableCell size="small" >yo</TableCell>
-                  </TableRow>
-                  <TableRow>
-                  <TableCell component="th" scope="row" size="small">
-                    go
-                  </TableCell>
-                  <TableCell size="small">yo</TableCell>
-                </TableRow><TableRow>
-                <TableCell component="th" scope="row" size="small">
-                  go
-                </TableCell>
-                <TableCell size="small">yo</TableCell>
-              </TableRow>
-              </TableBody>
+                    <TableRow key={purchaseHistory._id+0}>
+                        <TableCell component="th" scope="row" size="small" padding='checkbox'>
+                            PURCHASED BY
+                        </TableCell>
+                        <TableCell size="small" >
+                            {purchaseHistory.UserName}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow key={purchaseHistory._id+1}>
+                        <TableCell component="th" scope="row" size="small">
+                            PURCHASED FROM
+                        </TableCell>
+                        <TableCell size="small">
+                            {purchaseHistory.SellerName}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow key={purchaseHistory._id+2}>
+                        <TableCell component="th" scope="row" size="small">
+                            ITEM COUNT
+                        </TableCell>
+                        <TableCell size="small">
+                            {purchaseHistory.ItemCount}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow key={purchaseHistory._id+3}>
+                        <TableCell component="th" scope="row" size="small">
+                            PURCHASE DATE
+                        </TableCell>
+                        <TableCell size="small">
+                            {purchaseHistory._id}
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
             </Table>
           </TableContainer>
             </CardContent>
@@ -82,4 +87,4 @@ render(){
 }
 }
 
-export default withStyles(useStyles)(HistoryDisplay);
+export default HistoryDisplay;

@@ -12,7 +12,7 @@ class PurchaseHistory extends Component {
         
         this.state = {
             page: 0,
-            history: [{},{},{}],
+            history: [],
         }
     }
 
@@ -33,15 +33,16 @@ class PurchaseHistory extends Component {
                 console.log(error)
             })
             
+            
     }
     
     render() {
         return (
             <div>
                 {
-                    this.state.history.map((h, index) => (
-                        <div>
-                            <HistoryDisplay  key={index} purchaseHistory={h} />
+                    this.state.history.map((h,) => (
+                        <div key={h._id}>
+                            <HistoryDisplay purchaseHistory={h} />
                             <Divider />
                         </div>
                     ))
