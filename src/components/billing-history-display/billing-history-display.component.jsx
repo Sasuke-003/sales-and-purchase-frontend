@@ -15,6 +15,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import TableContainer from '@material-ui/core/TableContainer';
+
+
 import ViewItemPopup from '../view-item-popup/view-item-popup.component'
 
 
@@ -49,6 +51,8 @@ class BillingHistoryDisplay extends React.Component {
         if( historyData.length === 0 ) {
 
             const res = await req.sale.detail( billingDetailData );
+
+            console.log( res );
 
             for(let i=0; i<res.Items.length;i++){
 

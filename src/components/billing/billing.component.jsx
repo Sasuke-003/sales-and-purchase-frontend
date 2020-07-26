@@ -179,10 +179,23 @@ class Billing extends Component {
     }
 
 
-    submitItem = () => {
+    submitItem = async () => {
         
-        console.log(this.state);
+        let newCart = [];
+
+        this.state.cart.map( ( c ) => ( newCart.push ( { Name: c.Name, Qty: c.Qty } ) ) );
+
+        const billingData = {
+
+            Items      : newCart
+
+        }
+        
+        await req.sale.create( billingData );
+
+        this.setState( { cart: [] } );
         this.handleClose();
+        alert("Successfully Purchased") 
 
     }
 

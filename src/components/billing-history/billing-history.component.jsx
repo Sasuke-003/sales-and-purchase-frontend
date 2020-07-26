@@ -7,13 +7,13 @@ import IconButton from '@material-ui/core/IconButton';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
-import HistoryDisplay from '../history-display/history-display.component';
+import BillingHistoryDisplay from '../billing-history-display/billing-history-display.component';
 
 
 import { req } from '../../url/url';
 
 
-class PurchaseHistory extends Component {
+class BillingHistory extends Component {
 
     constructor() {
 
@@ -109,7 +109,7 @@ class PurchaseHistory extends Component {
                 {
                     this.state.history.map((h,) => (
                         <div key={h._id}>
-                            <HistoryDisplay purchaseHistory={h} setHistoryToState={this.setHistoryToState} billing />
+                            <BillingHistoryDisplay billingHistory={h} setHistoryToState={this.setHistoryToState} />
                             <Divider />
                         </div>
                     ))
@@ -131,4 +131,4 @@ const mapStatetoProps = state => ({
 });
 
 
-export default connect( mapStatetoProps )(PurchaseHistory);
+export default connect( mapStatetoProps )(BillingHistory);
