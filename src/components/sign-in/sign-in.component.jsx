@@ -1,53 +1,81 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
-import { setCurrentUser } from '../../redux/user/user.actions';
+import axios from 'axios';
+
+
+import MyPasswordField from '../my-password-field/my-password-field'
 import MyTextField from '../my-text-field/my-text-field';
 import MyButton from '../my-button/my-button';
-import MyPasswordField from '../my-password-field/my-password-field'
+
+
+import { setCurrentUser } from '../../redux/user/user.actions';
+import { req } from '../../url/url'
+
+
 import './sign-in.styles.css';
 
 
 class SignIn extends Component {
-    constructor(props) {
-        super(props);
+
+    
+    constructor() {
+        
+        super();
         
         this.state = {
-            userName: 'a',
-            password: 'a',
-            isPasswordError: false,
-            helperText:''
+
+            userName        : 'a',
+            password        : 'a',
+            isPasswordError : false,
+            helperText      : '',
+            
         }
 
     }
+
+
     handleChange = event => {
-        const {value, name} = event.target;
-        if (name==='isAdmin'){
-            this.setState({ [name]: event.target.checked})
-        }
-        else
-            this.setState({ [name]: value})
+
+        const { value, name } = event.target;
+        this.setState( { [name]: value } );
+
     }
    
-    handleSubmit = async () => {
-        const { setCurrentUser } = this.props;
 
+    handleSubmit = async () => {
+
+        const { setCurrentUser } = this.props;
         const signinData = {
-            Email   : this.state.userName,
-            Password: this.state.password
+
+            Email    : this.state.userName,
+            Password : this.state.password,
+
         }
-        axios.post ( '/user/login', signinData )
-            .then  ( data  => { 
-                axios.defaults.headers.common['Authorization'] = data.AccessToken ;
-                setCurrentUser({ Type: data.Type }) ;
-            })
-            .catch ( error => { this.setState ({ isPasswordError: true }) });
+        
+        try {
+
+            const res = await req.user.login( signinData );
+
+            axios.defaults.headers.common['Authorization'] = res.AccessToken;
+            setCurrentUser({ Type: res.Type });
+            
+        } 
+        catch (error) {
+
+            this.setState ({ isPasswordError: true });
+
+        }
     }
 
+
     render() {
+
         const { userName, password, isPasswordError} = this.state;
+
         return (
+
             <div className='sign-in'>
+
                     <MyTextField 
                         className='col-4 col-s-4'
                         name='userName'
@@ -56,6 +84,7 @@ class SignIn extends Component {
                         value={userName}
                         label='USERNAME'
                     />
+
                     <MyPasswordField 
                         className='col-4 col-s-4'
                         name="password" 
@@ -65,17 +94,22 @@ class SignIn extends Component {
                         label='PASSWORD'
                         error = {isPasswordError}
                     />
+
                     <MyButton className='button' variant='contained' type='submit' color='secondary' onClick={this.handleSubmit} >
                         SIGN IN
                     </MyButton>
+
             </div>
         );
     }
 }
 
+
 const mapDispatchToProps = dispatch => ({
+
     setCurrentUser: user => dispatch(setCurrentUser(user))
+    
 });
 
 
-export default connect(null, mapDispatchToProps)(SignIn);
+export default connect( null, mapDispatchToProps )( SignIn );

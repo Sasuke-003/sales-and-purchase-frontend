@@ -1,5 +1,4 @@
 import React from 'react';
-import './billing-page.styles.css'
 import Billing from '../../components/billing/billing.component'
 import BillingHistory from '../../components/billing-history/billing-history.component'
 import PropTypes from 'prop-types';
@@ -51,8 +50,15 @@ TabPanel.propTypes = {
     root: {
       backgroundColor: theme.palette.background.paper,
       width: '100%',
-      paddingTop: '25px',
+      display : 'flexbox'
     },
+    po: {
+      position: '-webkit-sticky',
+      top: 20,
+      bottom: 20, 
+      paddingTop: '35px',
+      zIndex: 5,
+    }
   }));
 
 
@@ -67,7 +73,7 @@ const BillingPage = () => {
     };
     return (
         <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar className={classes.po} position="sticky" color="default">
         <Tabs
           value={value}
           onChange={handleChange}

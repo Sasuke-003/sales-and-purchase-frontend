@@ -51,8 +51,15 @@ TabPanel.propTypes = {
     root: {
       backgroundColor: theme.palette.background.paper,
       width: '100%',
-      paddingTop: '25px',
+      display : 'flexbox'
     },
+    po: {
+      position: '-webkit-sticky',
+      top: 20,
+      bottom: 20, 
+      paddingTop: '35px',
+      zIndex: 5,
+    }
   }));
 
 
@@ -67,7 +74,7 @@ const AddItemPage = () => {
     };
     return (
         <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar className={classes.po} position="sticky" color="default">
         <Tabs
           value={value}
           onChange={handleChange}

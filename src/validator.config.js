@@ -126,11 +126,11 @@ module.exports.sale = {
     }),
     
     listMy : Joi.object({
-        P : Joi.number().positive().required()
+        P : Joi.number().required()
     }),
     
     listAll : Joi.object({
-        P : Joi.number().positive().required()
+        P : Joi.number().required()
     }),
     
 } ;

@@ -1,38 +1,101 @@
 import React, { Component } from 'react';
-import HistoryDisplay from '../history-display/history-display.component'
+
+
 import Divider from '@material-ui/core/Divider';
-import axios from 'axios';
+import IconButton from '@material-ui/core/IconButton';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+
+import HistoryDisplay from '../history-display/history-display.component';
 
 
+import { req } from '../../url/url';
 
 
 class PurchaseHistory extends Component {
-    constructor(props) {
-        super(props);
+
+    constructor() {
+
+        super();
         
         this.state = {
-            page: 0,
-            history: [],
+
+            page    : 0,
+            maxPage : 0,
+            history : [],
+
         }
+
     }
 
-    setHistoryToState = () => {
-        axios.post('/purchase/list-all', {P:this.state.page}).then((res) => {
-            this.setState({
-                history: res
-            })}
-            ).catch((error) => {
-                console.log(error)
-            })
+
+    incrementPage = () => {
+
+        this.setState( (prevState, props) => ({
+
+            page: prevState.page + 1,
+
+        }), () => {
+
+            this.setHistoryToState();
+
+        });
+
     }
+
+    decrementPage = () => {
+
+        if( this.state.page !== 0 ){
+
+            this.setState( (prevState, props) => ({
+
+                page: prevState.page - 1,
+
+            }),() => {
+
+                this.setHistoryToState();
+    
+            });
+
+        }
+
+    }
+
+
+    setHistoryToState = async () => {
+
+        const purchaseHistoryData = { P : this.state.page };
+
+        const res = await req.purchase.listAll( purchaseHistoryData );
+
+        this.setState( { history: res } ) 
+    
+    }
+        
 
     componentDidMount(){
-            this.setHistoryToState();
+
+        this.setHistoryToState();
+
     }
     
+
     render() {
+
         return (
+
             <div>
+
+                    <IconButton aria-label="delete" onClick={ this.decrementPage } disabled={ this.state.page === 0 ? true : false } >
+                        <NavigateBeforeIcon fontSize="large" />
+                    </IconButton>
+
+                    {this.state.page+1}
+
+                    <IconButton aria-label="delete" onClick={ this.incrementPage } >
+                        <NavigateNextIcon fontSize="large" />
+                    </IconButton>
+
                 {
                     this.state.history.map((h,) => (
                         <div key={h._id}>
@@ -41,15 +104,14 @@ class PurchaseHistory extends Component {
                         </div>
                     ))
                 }
+
             </div>
+
         );
+
     }
+
 }
-
-
-const mapStatetoProps = state => ({
-    currentUser: state.user.currentUser
-});
 
 
 export default PurchaseHistory

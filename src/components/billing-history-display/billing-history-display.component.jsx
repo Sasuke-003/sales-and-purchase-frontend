@@ -22,7 +22,7 @@ import { reqItemUnit } from '../../data'
 import { req } from '../../url/url'
 
 
-class HistoryDisplay extends React.Component {
+class BillingHistoryDisplay extends React.Component {
 
     constructor() {
 
@@ -43,12 +43,12 @@ class HistoryDisplay extends React.Component {
     setHistoryData = async () => {
 
         const { historyData } = this.state;
-        const { purchaseHistory } = this.props;
-        const purchaseDetailData = { _id : purchaseHistory._id };
+        const { billingHistory } = this.props;
+        const billingDetailData = { _id : billingHistory._id };
 
         if( historyData.length === 0 ) {
 
-            const res = await req.purchase.detail( purchaseDetailData );
+            const res = await req.sale.detail( billingDetailData );
 
             for(let i=0; i<res.Items.length;i++){
 
@@ -114,8 +114,8 @@ class HistoryDisplay extends React.Component {
 
     handleDeleteClick = async () => {
 
-        const purchaseDeleteData = { _id:this.props.purchaseHistory._id };
-        await req.purchase.delete( purchaseDeleteData );
+        const billingDeleteData = { _id:this.props.billingHistory._id };
+        await req.sale.delete( billingDeleteData );
         alert("Successfully Deleted");
         this.handleDeleteClose();
         this.props.setHistoryToState()
@@ -124,7 +124,7 @@ class HistoryDisplay extends React.Component {
 
     
     render(){
-        const { purchaseHistory } = this.props;
+        const { billingHistory } = this.props;
 
         const { deletePopper, editPopper, viewPopper, historyData } = this.state;
 
@@ -139,50 +139,50 @@ class HistoryDisplay extends React.Component {
 
                              <TableBody>
 
-                                <TableRow key={purchaseHistory._id+0}>
+                                <TableRow key={billingHistory._id+0}>
 
                                     <TableCell component="th" scope="row" size="small" padding='checkbox'>
                                         PURCHASED BY
                                     </TableCell>
 
                                     <TableCell size="small" >
-                                        {purchaseHistory.UserName}
+                                        {billingHistory.UserName}
                                     </TableCell>
 
                                 </TableRow>
 
-                                <TableRow key={purchaseHistory._id+1}>
+                                <TableRow key={billingHistory._id+1}>
 
                                     <TableCell component="th" scope="row" size="small">
-                                        PURCHASED FROM
+                                        SOLD BY
                                     </TableCell>
 
                                     <TableCell size="small">
-                                        {purchaseHistory.SellerName}
+                                        {billingHistory.SellerName}
                                     </TableCell>
 
                                 </TableRow>
 
-                                <TableRow key={purchaseHistory._id+2}>
+                                <TableRow key={billingHistory._id+2}>
 
                                     <TableCell component="th" scope="row" size="small">
                                         ITEM COUNT
                                     </TableCell>
 
                                     <TableCell size="small">
-                                        {purchaseHistory.ItemCount}
+                                        {billingHistory.ItemCount}
                                     </TableCell>
                                     
                                 </TableRow>
 
-                                <TableRow key={purchaseHistory._id+3}>
+                                <TableRow key={billingHistory._id+3}>
 
                                     <TableCell component="th" scope="row" size="small">
                                         PURCHASE DATE
                                     </TableCell>
 
                                     <TableCell size="small">
-                                        {this.idToDate(purchaseHistory._id)}
+                                        {this.idToDate(billingHistory._id)}
                                     </TableCell>
 
                                 </TableRow>
@@ -214,13 +214,13 @@ class HistoryDisplay extends React.Component {
                 <Dialog
                     open={viewPopper}
                     onClose={this.handleViewClose}
-                    aria-labelledby="view-popup"
-                    aria-describedby="alert-dialog-description-view"
+                    aria-labelledby="b-view-popup"
+                    aria-describedby="b-alert-dialog-description-view"
                     fullWidth
                     maxWidth='md'
                 >
 
-                    <DialogTitle id="view-popup">{"ITEMS"}</DialogTitle>
+                    <DialogTitle id="b-view-popup">{"ITEMS"}</DialogTitle>
 
                     <DialogContent>
 
@@ -241,13 +241,13 @@ class HistoryDisplay extends React.Component {
                 <Dialog
                     open={editPopper}
                     onClose={this.handleEditClose}
-                    aria-labelledby="edit-popup"
-                    aria-describedby="alert-dialog-description-edit"
+                    aria-labelledby="b-edit-popup"
+                    aria-describedby="b-alert-dialog-description-edit"
                     fullWidth
                     maxWidth='md'
                 >
 
-                    <DialogTitle id="edit-popup">{"EDIT"}</DialogTitle>
+                    <DialogTitle id="b-edit-popup">{"EDIT"}</DialogTitle>
 
                     <DialogContent>
 
@@ -272,13 +272,13 @@ class HistoryDisplay extends React.Component {
                 <Dialog
                     open={deletePopper}
                     onClose={this.handleDeleteClose}
-                    aria-labelledby="delete-popup"
-                    aria-describedby="alert-dialog-description-delete"
+                    aria-labelledby="b-delete-popup"
+                    aria-describedby="b-alert-dialog-description-delete"
                     fullWidth
                     maxWidth='md'
                 >
 
-                    <DialogTitle id="delete-popup">{"The below purchased items will be deleted!"}</DialogTitle>
+                    <DialogTitle id="b-delete-popup">{"The below purchased items will be deleted!"}</DialogTitle>
 
                     <DialogContent>
 
@@ -309,4 +309,4 @@ class HistoryDisplay extends React.Component {
 }
 
 
-export default HistoryDisplay;
+export default BillingHistoryDisplay;

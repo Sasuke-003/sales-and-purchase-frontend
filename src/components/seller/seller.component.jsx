@@ -1,107 +1,148 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
-import InputField from '../input-field/inputfield.component'
+
 import MyButton from '../my-button/my-button';
+import InputField from '../input-field/inputfield.component'
 
 
+import { req } from '../../url/url'
 
 
 let timerID ;
 const timeOutValue = 500 ;
-let s = new Set();
+let sellerDataSet = new Set();
 
 
 class Seller extends Component {
-    constructor(props) {
-        super(props);
+
+    constructor() {
+        super();
         
         this.state = {
-            Name: '',
-            Error: false,
-            helperText: '',
-            data: []
+
+            Name       : '',
+            Error      : false,
+            helperText : '',
+            data       : [],
+
         };
 
     }
 
-    componentDidMount(){
-        s.clear();
-    }
+   
 
     handleChange = event => {
+
         let error = false;
         let helperText = '';
         const { name, value } = event.target;
-        this.setState({
-                [name]: value
-        });
+
+        this.setState( {  [name]: value } );
+
         if ( timerID ) clearTimeout( timerID ) ;
-        timerID = setTimeout( () =>{
+
+        timerID = setTimeout( async () =>{
+
             timerID = undefined ;
-            const searchword = value;
-            if (  searchword !== ''){
-                axios.post('/seller', {"S":searchword}).then(
-                    (res) => {
-                        for(let i=0; i<res.length; i++){
-                            if(!s.has(res[i].Name)){
-                                this.setState({
-                                    data: this.state.data.concat(res[i].Name)
-                                });
-                                s.add(res[i].Name);
-                            }
-                        }
+            const searchData = { S : value };
+
+            if (  searchData.S !== ''){
+
+                const res = await req.seller.autoCompleteData( searchData );
+
+                for( let i=0; i<res.length; i++ ){
+
+                    if(!sellerDataSet.has(res[i].Name)){
+
+                        this.setState( { data: this.state.data.concat( res[i].Name ) } );
+                        sellerDataSet.add( res[i].Name );
+
                     }
-    
-                ).catch((error) => {
-                    console.log(error)
-                })
+
+                }
+
             }
 
         } , timeOutValue ) ;
-        if (this.state.data.indexOf(value) !== -1){
+
+        if ( this.state.data.indexOf( value ) !== -1 ){
+
             error = true;
             helperText = 'This Seller is already added';
+
         }
-        else if(value === ''){
+        else if( value === '' ){
+
             error = true;
             helperText = 'Seller name cannot be empty';
+
         }
+
         this.setState({
             Error: error,
             helperText: helperText
         })
+
     }
 
-    handleSubmit = (event) => {
+    handleSubmit = async ( event ) => {
+
         event.preventDefault();
-        const SellerData = {
+
+        const sellerData = {
+
             Name: this.state.Name
+
         }
+
         if (!this.state.Error){
-            axios.post( '/seller/add', SellerData)
-            .then((res) => {
-                alert("successfully Registered")   
+            try{
+
+                await req.seller.add( sellerData );
+
+                alert("successfully Registered");
+
                 this.setState({
-                    Name: '',
-                    Error: false,
-                    helperText: '',
-                })   
-            })
-            .catch((error) => {
-                console.log('NOT ADDED')
-            });
+                    Name       : '',
+                    Error      : false,
+                    helperText : '',
+                }) ;
+
+
+            }
+            catch( error ){
+
+                alert( ' something went wring try again ' )
+
+            }
+
         }
         else{
-            // alert('password does not match')
+
+            alert('Enter valid Name')
+            
         }
+
     }
 
+
+    componentDidMount(){
+
+        sellerDataSet.clear();
+        
+    }
+
+
     render() {
+
         const { Name, Error, data, helperText } = this.state;
+
         return (
+
             <div className='sign-up'>
-            <form onSubmit={this.handleSubmit} >
+            
+                <form onSubmit={this.handleSubmit} >
+
                     <InputField 
                         className='col-4 col-s-4'
                         name='Name'
@@ -113,13 +154,19 @@ class Seller extends Component {
                         helperText={helperText}
                         datalist={data}
                     />
+
                     <MyButton className='button' variant='contained' type='submit' color='secondary'>
                         ADD SELLER
                     </MyButton>
-                    </form>
+
+                </form>
+
             </div>
+
         );
+
     }
+
 }
 
 
