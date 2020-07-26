@@ -16,12 +16,14 @@ const validator = {
 
     "/sale/create"   : sale.create,
     "/sale/detail"   : sale.detail,
+    "/sale/update"   : sale.update,
     "/sale/delete"   : sale.delete,
     "/sale/list-all" : sale.listAll,
     "/sale/list-my"  : sale.listMy,
 
     "/purchase/create"   : purchase.create,
     "/purchase/detail"   : purchase.detail,
+    "/purchase/update"   : purchase.update,
     "/purchase/delete"   : purchase.delete,
     "/purchase/list-all" : purchase.listAll,
     "/purchase/list-my"  : purchase.listMy,
