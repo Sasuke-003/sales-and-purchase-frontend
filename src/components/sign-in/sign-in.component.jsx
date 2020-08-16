@@ -24,8 +24,8 @@ class SignIn extends Component {
         
         this.state = {
 
-            userName        : 'a',
-            password        : 'a',
+            userName        : '',
+            password        : '',
             isPasswordError : false,
             helperText      : '',
             

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-
 import MyButton from '../my-button/my-button';
 import MyCheckBox from '../my-check-box/my-check-box';
 import MyTextField from '../my-text-field/my-text-field';

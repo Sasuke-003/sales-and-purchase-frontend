@@ -1,316 +1,236 @@
-import React from 'react';
-import moment from 'moment'
+import React from "react";
+import moment from "moment";
 
+import Card from "@material-ui/core/Card";
+import Table from "@material-ui/core/Table";
+import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
+import TableRow from "@material-ui/core/TableRow";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import TableContainer from "@material-ui/core/TableContainer";
 
-import Card from '@material-ui/core/Card';
-import Table from '@material-ui/core/Table';
-import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
-import TableRow from '@material-ui/core/TableRow';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import TableContainer from '@material-ui/core/TableContainer';
+import ViewItemPopup from "../view-item-popup/view-item-popup.component";
 
-
-import ViewItemPopup from '../view-item-popup/view-item-popup.component'
-
-
-import { reqItemUnit } from '../../data'
-import { req } from '../../url/url'
-
+import { reqItemUnit } from "../../data";
+import { req } from "../../url/url";
+import BillingEditItemPopup from "../billing-edit-item-popup/billing-edit-item.component";
 
 class BillingHistoryDisplay extends React.Component {
+  constructor() {
+    super();
 
-    constructor() {
+    this.state = {
+      historyData: [],
+      bid: "",
+      editPopper: false,
+      deletePopper: false,
+      viewPopper: false,
+    };
+  }
 
-        super();
-        
-        this.state ={
+  setHistoryData = async () => {
+    const { historyData } = this.state;
+    const { billingHistory } = this.props;
+    const billingDetailData = { _id: billingHistory._id };
 
-            historyData  : [],
-            editPopper   : false,
-            deletePopper : false,
-            viewPopper   : false,
+    if (historyData.length === 0) {
+      this.setState({ bid: billingHistory._id });
 
-        }
+      const res = await req.sale.detail(billingDetailData);
 
-    }
+      console.log(res);
 
-
-    setHistoryData = async () => {
-
-        const { historyData } = this.state;
-        const { billingHistory } = this.props;
-        const billingDetailData = { _id : billingHistory._id };
-
-        if( historyData.length === 0 ) {
-
-            const res = await req.sale.detail( billingDetailData );
-
-            console.log( res );
-
-            for(let i=0; i<res.Items.length;i++){
-
-                this.setState({
-
-                    historyData: this.state.historyData.concat({
-
-                        Name :res.Items[i].Name,
-                        Qty  :res.Items[i].Qty,
-                        Unit :await reqItemUnit(res.Items[i].Name),
-
-                    })
-
-                });
-
-            }
-
-        }
-        
-    }
-
-    idToDate = ( id ) => {
-
-        return moment(parseInt(id.substring(0,8), 16)* 1000).format("DD/MM/YYYY-hh:mm:ss A");
-
-    }
-
-    handleEditOpen = () => {
+      for (let i = 0; i < res.Items.length; i++) {
         this.setState({
-            editPopper: true
-        })
-
-    }
-    handleEditClose = () => {
-        this.setState({
-            editPopper: false
-        })
-    }
-    handleDeleteOpen = () => {
-        this.setState({
-            deletePopper: true
+          historyData: this.state.historyData.concat({
+            Name: res.Items[i].Name,
+            Qty: res.Items[i].Qty,
+            Unit: await reqItemUnit(res.Items[i].Name),
+          }),
         });
-        this.setHistoryData();  
+      }
     }
-    handleDeleteClose = () => {
-        this.setState({
-            deletePopper: false
-        });
-        
-    }
-    handleViewOpen = async () => {
-        this.setState({
-            viewPopper: true
-        })
-        this.setHistoryData();                      
-    }
-    handleViewClose = () => {
-        this.setState({
-            viewPopper: false
-        })
-    }
+  };
 
+  idToDate = (id) => {
+    return moment(parseInt(id.substring(0, 8), 16) * 1000).format("DD/MM/YYYY-hh:mm:ss A");
+  };
 
-    handleDeleteClick = async () => {
+  handleEditOpen = async () => {
+    await this.setHistoryData();
+    this.setState({
+      editPopper: true,
+    });
+  };
+  handleEditClose = () => {
+    this.setState({
+      editPopper: false,
+    });
+  };
+  handleDeleteOpen = () => {
+    this.setState({
+      deletePopper: true,
+    });
+    this.setHistoryData();
+  };
+  handleDeleteClose = () => {
+    this.setState({
+      deletePopper: false,
+    });
+  };
+  handleViewOpen = async () => {
+    this.setState({
+      viewPopper: true,
+    });
+    this.setHistoryData();
+  };
+  handleViewClose = () => {
+    this.setState({
+      viewPopper: false,
+    });
+  };
 
-        const billingDeleteData = { _id:this.props.billingHistory._id };
-        await req.sale.delete( billingDeleteData );
-        alert("Successfully Deleted");
-        this.handleDeleteClose();
-        this.props.setHistoryToState()
-       
-    }
+  handleDeleteClick = async () => {
+    const billingDeleteData = { _id: this.props.billingHistory._id };
+    await req.sale.delete(billingDeleteData);
+    alert("Successfully Deleted");
+    this.handleDeleteClose();
+    this.props.setHistoryToState();
+  };
 
-    
-    render(){
-        const { billingHistory } = this.props;
+  render() {
+    const { billingHistory } = this.props;
 
-        const { deletePopper, editPopper, viewPopper, historyData } = this.state;
+    const { deletePopper, editPopper, viewPopper, historyData, bid } = this.state;
 
-        return (
-            <Card >
-            
-                <CardContent>
+    return (
+      <Card>
+        <CardContent>
+          <TableContainer>
+            <Table aria-label='simple table'>
+              <TableBody>
+                <TableRow key={billingHistory._id + 0}>
+                  <TableCell component='th' scope='row' size='small' padding='checkbox'>
+                    PURCHASED BY
+                  </TableCell>
 
-                    <TableContainer>
+                  <TableCell size='small'>{billingHistory.UserName}</TableCell>
+                </TableRow>
 
-                        <Table aria-label="simple table">
+                <TableRow key={billingHistory._id + 1}>
+                  <TableCell component='th' scope='row' size='small'>
+                    SOLD BY
+                  </TableCell>
 
-                             <TableBody>
+                  <TableCell size='small'>{billingHistory.SellerName}</TableCell>
+                </TableRow>
 
-                                <TableRow key={billingHistory._id+0}>
+                <TableRow key={billingHistory._id + 2}>
+                  <TableCell component='th' scope='row' size='small'>
+                    ITEM COUNT
+                  </TableCell>
 
-                                    <TableCell component="th" scope="row" size="small" padding='checkbox'>
-                                        PURCHASED BY
-                                    </TableCell>
+                  <TableCell size='small'>{billingHistory.ItemCount}</TableCell>
+                </TableRow>
 
-                                    <TableCell size="small" >
-                                        {billingHistory.UserName}
-                                    </TableCell>
+                <TableRow key={billingHistory._id + 3}>
+                  <TableCell component='th' scope='row' size='small'>
+                    PURCHASE DATE
+                  </TableCell>
 
-                                </TableRow>
+                  <TableCell size='small'>{this.idToDate(billingHistory._id)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
 
-                                <TableRow key={billingHistory._id+1}>
+        <CardActions>
+          <Button size='small' color='primary' onClick={this.handleViewOpen}>
+            View
+          </Button>
 
-                                    <TableCell component="th" scope="row" size="small">
-                                        SOLD BY
-                                    </TableCell>
+          <Button size='small' color='primary' onClick={this.handleEditOpen}>
+            Edit
+          </Button>
 
-                                    <TableCell size="small">
-                                        {billingHistory.SellerName}
-                                    </TableCell>
+          <Button size='small' color='primary' onClick={this.handleDeleteOpen}>
+            Delete
+          </Button>
+        </CardActions>
 
-                                </TableRow>
+        <Dialog
+          open={viewPopper}
+          onClose={this.handleViewClose}
+          aria-labelledby='b-view-popup'
+          aria-describedby='b-alert-dialog-description-view'
+          fullWidth
+          maxWidth='md'>
+          <DialogTitle id='b-view-popup'>{"ITEMS"}</DialogTitle>
 
-                                <TableRow key={billingHistory._id+2}>
+          <DialogContent>
+            <ViewItemPopup historyData={historyData} />
+          </DialogContent>
 
-                                    <TableCell component="th" scope="row" size="small">
-                                        ITEM COUNT
-                                    </TableCell>
+          <DialogActions>
+            <Button onClick={this.handleViewClose} color='primary' autoFocus>
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-                                    <TableCell size="small">
-                                        {billingHistory.ItemCount}
-                                    </TableCell>
-                                    
-                                </TableRow>
+        <Dialog
+          open={editPopper}
+          onClose={this.handleEditClose}
+          aria-labelledby='b-edit-popup'
+          aria-describedby='b-alert-dialog-description-edit'
+          fullWidth
+          maxWidth='md'>
+          <DialogTitle id='b-edit-popup'>{"EDIT"}</DialogTitle>
 
-                                <TableRow key={billingHistory._id+3}>
+          <DialogContent>
+            <BillingEditItemPopup historyData={historyData} bid={bid} />
+          </DialogContent>
 
-                                    <TableCell component="th" scope="row" size="small">
-                                        PURCHASE DATE
-                                    </TableCell>
+          <DialogActions>
+            <Button onClick={this.handleEditClose} color='primary'>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-                                    <TableCell size="small">
-                                        {this.idToDate(billingHistory._id)}
-                                    </TableCell>
+        <Dialog
+          open={deletePopper}
+          onClose={this.handleDeleteClose}
+          aria-labelledby='b-delete-popup'
+          aria-describedby='b-alert-dialog-description-delete'
+          fullWidth
+          maxWidth='md'>
+          <DialogTitle id='b-delete-popup'>{"The below purchased items will be deleted!"}</DialogTitle>
 
-                                </TableRow>
+          <DialogContent>
+            <ViewItemPopup historyData={historyData} />
+          </DialogContent>
 
-                            </TableBody>
+          <DialogActions>
+            <Button onClick={this.handleDeleteClose} color='primary'>
+              Cancel
+            </Button>
 
-                        </Table>
-
-                    </TableContainer>
-
-                </CardContent>
-            
-                <CardActions>
-
-                    <Button size="small" color="primary" onClick={this.handleViewOpen} >
-                        View
-                    </Button>
-                    
-                    <Button size="small" color="primary" onClick={this.handleEditOpen} >
-                    Edit
-                    </Button>
-                    
-                    <Button size="small" color="primary" onClick={this.handleDeleteOpen}  >
-                    Delete
-                    </Button>
-                
-                </CardActions>
-
-                <Dialog
-                    open={viewPopper}
-                    onClose={this.handleViewClose}
-                    aria-labelledby="b-view-popup"
-                    aria-describedby="b-alert-dialog-description-view"
-                    fullWidth
-                    maxWidth='md'
-                >
-
-                    <DialogTitle id="b-view-popup">{"ITEMS"}</DialogTitle>
-
-                    <DialogContent>
-
-                        <ViewItemPopup historyData={historyData} />
-
-                    </DialogContent>
-
-                    <DialogActions>
-
-                        <Button onClick={this.handleViewClose}  color="primary" autoFocus >
-                            Ok
-                        </Button>
-
-                    </DialogActions>
-
-                </Dialog>
-
-                <Dialog
-                    open={editPopper}
-                    onClose={this.handleEditClose}
-                    aria-labelledby="b-edit-popup"
-                    aria-describedby="b-alert-dialog-description-edit"
-                    fullWidth
-                    maxWidth='md'
-                >
-
-                    <DialogTitle id="b-edit-popup">{"EDIT"}</DialogTitle>
-
-                    <DialogContent>
-
-                        edit
-
-                    </DialogContent>
-
-                    <DialogActions>
-
-                        <Button onClick={this.handleEditClose} color="primary">
-                            Cancel
-                        </Button>
-
-                        <Button onClick={this.handleEditClose}  color="primary" autoFocus >
-                            Submit
-                        </Button>
-
-                    </DialogActions>
-                    
-                </Dialog>
-
-                <Dialog
-                    open={deletePopper}
-                    onClose={this.handleDeleteClose}
-                    aria-labelledby="b-delete-popup"
-                    aria-describedby="b-alert-dialog-description-delete"
-                    fullWidth
-                    maxWidth='md'
-                >
-
-                    <DialogTitle id="b-delete-popup">{"The below purchased items will be deleted!"}</DialogTitle>
-
-                    <DialogContent>
-
-                        <ViewItemPopup historyData={historyData} />
-
-                    </DialogContent>
-
-                    <DialogActions>
-
-                    <Button onClick={this.handleDeleteClose} color="primary">
-                        Cancel
-                    </Button>
-
-                    <Button onClick={this.handleDeleteClick}  color="primary" autoFocus >
-                        Delete
-                    </Button>
-
-                    </DialogActions>
-
-                </Dialog>
-
-            </Card>
-
-        );
-
-    }
-
+            <Button onClick={this.handleDeleteClick} color='primary' autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Card>
+    );
+  }
 }
-
 
 export default BillingHistoryDisplay;
