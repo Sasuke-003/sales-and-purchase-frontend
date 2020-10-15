@@ -40,8 +40,10 @@ export const req = {
     autoCompleteData: async (data) => {
       const res = await axios.get(URL.item + data.S);
       let arr = [];
-      for (let i = 0; i < res.Items.length; i++) {
-        arr.push({ Name: res.Items[i] });
+      if (res) {
+        for (let i = 0; i < res.Items.length; i++) {
+          arr.push({ Name: res.Items[i] });
+        }
       }
       return arr;
     },
@@ -60,8 +62,10 @@ export const req = {
     autoCompleteData: async (data) => {
       const res = await axios.get(URL.seller + data.S);
       let arr = [];
-      for (let i = 0; i < res.SellerNames.length; i++) {
-        arr.push({ Name: res.SellerNames[i] });
+      if (res) {
+        for (let i = 0; i < res.SellerNames.length; i++) {
+          arr.push({ Name: res.SellerNames[i] });
+        }
       }
       return arr;
     },

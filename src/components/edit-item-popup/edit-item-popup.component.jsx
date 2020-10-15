@@ -194,6 +194,7 @@ class EditItemPopup extends Component {
     this.setState({ cart: [] });
     this.handleClose();
     alert("Successfully Purchased");
+    window.location.reload(false);
   };
 
   componentDidMount = async () => {
