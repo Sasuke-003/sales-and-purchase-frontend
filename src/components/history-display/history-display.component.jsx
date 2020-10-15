@@ -100,7 +100,7 @@ class HistoryDisplay extends React.Component {
   };
 
   handleDeleteClick = async () => {
-    const purchaseDeleteData = { _id: this.props.purchaseHistory._id };
+    const purchaseDeleteData = { PurchaseID: this.state.pid };
     await req.purchase.delete(purchaseDeleteData);
     alert("Successfully Deleted");
     this.handleDeleteClose();

@@ -96,7 +96,7 @@ export const req = {
       return { Items: ToItemQtyPairList(res.Items) };
     },
     delete: async (data) => {
-      return await axios.delete(URL.purchaseDelete, data);
+      return await axios.post(URL.purchaseDelete, data);
     },
     update: async (data) => {
       return await axios.post(URL.purchaseUpdate, data);
@@ -128,7 +128,7 @@ export const req = {
     },
     delete: async (data) => {
       console.log(data);
-      return await axios.delete(URL.saleDelete, data);
+      return await axios.post(URL.saleDelete, data);
     },
     update: async (data) => {
       return await axios.post(URL.saleUpdate, data);

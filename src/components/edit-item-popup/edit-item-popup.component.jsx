@@ -179,16 +179,17 @@ class EditItemPopup extends Component {
   };
 
   submitItem = async () => {
-    let newCart = [];
+    let newCart = {};
 
-    this.state.cart.map((c) => newCart.push({ Name: c.Name, Qty: c.Qty }));
+    this.state.cart.map((c) => (newCart[c.Name] = c.Qty));
 
     const purchaseData = {
       SellerName: this.state.sellerName,
+      PurchaseID: this.state.pid,
       Items: newCart,
     };
 
-    await req.purchase.create(purchaseData);
+    await req.purchase.update(purchaseData);
 
     this.setState({ cart: [] });
     this.handleClose();
