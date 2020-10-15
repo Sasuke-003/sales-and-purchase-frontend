@@ -1,363 +1,266 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import Divider from "@material-ui/core/Divider";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import { ToItemQtyPairJson, ToItemQtyPairList } from "../../util.js";
 
+import ItemPopup from "../popup/popup.component";
+import MyTextField from "../my-text-field/my-text-field";
+import ItemTable from "../item-input/item-input.component";
+import MyFloatingButton from "../my-floating-button/my-floating-button";
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import Divider from '@material-ui/core/Divider';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
+import { req } from "../../url/url";
 
-
-
-import ItemPopup from '../popup/popup.component';
-import MyTextField from '../my-text-field/my-text-field'
-import ItemTable from '../item-input/item-input.component';
-import MyFloatingButton from '../my-floating-button/my-floating-button'
-
-import { req } from '../../url/url'
-
-
-let timerID ;
-const timeOutValue = 500 ;
+let timerID;
+const timeOutValue = 500;
 let dataSet = new Set();
 let sellerDataSet = new Set();
 
 const countOccurrences = (arr, val) => arr.reduce((a, v) => (v.Name === val ? a + 1 : a), 0);
 
-
 class Purchase extends Component {
+  constructor() {
+    super();
 
+    this.state = {
+      sellerName: "",
+      data: [],
+      cart: [],
+      Error: true,
+      sellerData: [],
+      helperText: "Seller name cannot be empty!",
+      popperStatus: false,
+      submitDisabled: false,
+    };
+  }
 
-    constructor() {
+  handleOpen = (event) => {
+    this.setState({ popperStatus: true });
 
-        super();
-        
-        this.state={
+    const { data, cart } = this.state;
+    let disabled = false;
 
-            sellerName     : '',
-            data           : [ ],
-            cart           : [ ],
-            Error          : true,
-            sellerData     : [],
-            helperText     : 'Seller name cannot be empty!',
-            popperStatus   : false,
-            submitDisabled : false
+    for (let i = 0; i < cart.length; i++) {
+      if (
+        data.indexOf(cart[i].Name) === -1 ||
+        cart[i].Name === "" ||
+        cart[i].Qty === "" ||
+        cart[i].Unit === "" ||
+        countOccurrences(cart, cart[i].Name) > 1
+      ) {
+        disabled = true;
+        break;
+      }
+    }
 
+    this.setState({ submitDisabled: disabled });
+  };
+
+  handleClose = (event) => {
+    this.setState({ popperStatus: false });
+  };
+
+  addItem = () => {
+    this.setState({
+      cart: [
+        ...this.state.cart,
+
+        {
+          Name: "",
+          Qty: "",
+          Unit: "",
+          AQty: "",
+          id: Date.now(),
+        },
+      ],
+    });
+  };
+
+  deleteItem = (id) => {
+    this.setState({ cart: this.state.cart.filter((c) => c.id !== id) });
+  };
+
+  handleOtherChange = (event, id) => {
+    const { name, value } = event.target;
+
+    this.setState({
+      cart: this.state.cart.map((c) => {
+        if (c.id !== id) return c;
+        return { ...c, [name]: value };
+      }),
+    });
+  };
+
+  handleSellerChange = (event) => {
+    let error = false;
+    let helperText = "";
+    const { name, value } = event.target;
+
+    this.setState({ [name]: value });
+
+    if (timerID) clearTimeout(timerID);
+
+    timerID = setTimeout(async () => {
+      timerID = undefined;
+      const searchData = { S: value };
+
+      if (searchData.S !== "") {
+        const res = await req.seller.autoCompleteData(searchData);
+
+        for (let i = 0; i < res.length; i++) {
+          if (!sellerDataSet.has(res[i].Name)) {
+            this.setState({ sellerData: this.state.sellerData.concat(res[i].Name) });
+            sellerDataSet.add(res[i].Name);
+          }
         }
 
-    }
-    
-
-    handleOpen = (event) => {
-
-        this.setState( { popperStatus: true } );
-
-        const { data, cart } = this.state;
-        let disabled = false;
-
-        for ( let i=0; i<cart.length; i++ ){
-
-            if ( data.indexOf(cart[i].Name) === -1 || cart[i].Name === '' || cart[i].Qty === '' || cart[i].Unit === '' || countOccurrences(cart, cart[i].Name) > 1  ){
-                
-                disabled = true;
-                break;
-
-            }
-
+        if (this.state.sellerData.indexOf(value) === -1) {
+          error = true;
+          helperText = "This seller is not Available!";
         }
+      } else {
+        error = true;
+        helperText = "Seller name cannot be empty!";
+      }
 
-        this.setState( { submitDisabled: disabled } );
+      this.setState({
+        Error: error,
+        helperText: helperText,
+      });
+    }, timeOutValue);
+  };
 
-    }
-    
+  handleChange = (event, id) => {
+    const { name, value } = event.target;
 
-    handleClose = (event) => {
+    this.setState({
+      cart: this.state.cart.map((c) => {
+        if (c.id !== id) return c;
+        return { ...c, [name]: value };
+      }),
+    });
 
-        this.setState( { popperStatus: false } );
+    if (name === "Name") {
+      if (timerID) clearTimeout(timerID);
 
-    }
-    
+      timerID = setTimeout(async () => {
+        timerID = undefined;
+        const searchData = { S: value };
 
-    
+        if (searchData.S !== "") {
+          const res = await req.item.autoCompleteData(searchData);
 
-
-    addItem = () => {
-
-        this.setState({
-
-            cart:   [...this.state.cart, 
-
-                        {
-
-                            Name : '',
-                            Qty  : '',
-                            Unit : '',
-                            AQty : '',
-                            id   : Date.now(),
-
-                        }
-
-                    ]
-
-        });
-
-    }
-
-
-    deleteItem = ( id ) => {
-
-        this.setState( { cart: this.state.cart.filter( ( c ) => c.id !== id ), } );
-
-    }
-
-
-    handleOtherChange = ( event, id ) => {
-
-        const { name, value } = event.target;
-
-        this.setState({
-
-            cart: this.state.cart.map((c) => {
-
-                if (c.id !== id) return c;
-                return {...c, [name]: value }
-
-            })
-
-        });
-
-    }
-
-    handleSellerChange = event => {
-
-        let error = false;
-        let helperText = '';
-        const { name, value } = event.target;
-
-        this.setState( { [name]: value } );
-
-        if ( timerID ) clearTimeout( timerID ) ;
-
-        timerID = setTimeout( async () =>{
-
-            timerID = undefined ;
-            const searchData = { S : value };
-
-            if (  searchData.S !== ''){
-                
-                const res = await req.seller.autoCompleteData( searchData );
-
-                for( let i=0; i<res.length; i++ ){
-
-                    if( !sellerDataSet.has( res[i].Name ) ){
-
-                        this.setState( { sellerData: this.state.sellerData.concat( res[i].Name ) } );
-                        sellerDataSet.add( res[i].Name );
-
-                    }
-
-                }
-
-                if ( this.state.sellerData.indexOf( value ) === -1 ) {
-
-                    error = true;
-                    helperText = 'This seller is not Available!';
-
-                }
-
+          for (let i = 0; i < res.length; i++) {
+            if (!dataSet.has(res[i].Name)) {
+              this.setState({ data: this.state.data.concat(res[i].Name) });
+              dataSet.add(res[i].Name);
             }
-            else {
+          }
 
-                error = true;
-                helperText = 'Seller name cannot be empty!';
+          if (this.state.data.indexOf(value) !== -1) {
+            const itemDetailData = { Name: value };
 
-            }
+            const res = await req.item.detail(itemDetailData);
 
             this.setState({
-                Error: error,
-                helperText: helperText
-            })
-
-        } , timeOutValue ) ;
-
-    }
-
-
-    handleChange = ( event, id ) => {
-
-        const { name, value } = event.target;
-
-        this.setState({
-
-            cart: this.state.cart.map( ( c ) => {
-
-                if ( c.id !== id ) return c;
-                return { ...c, [name]: value }
-
-            })
-
-        });
-
-        if ( name === 'Name' ){
-
-            if ( timerID ) clearTimeout( timerID ) ;
-
-            timerID = setTimeout( async () =>{
-
-                timerID = undefined ;
-                const searchData = { S: value };
-
-                if (  searchData.S !== '' ){
-
-                    const res = await req.item.autoCompleteData( searchData );
-
-                    for( let i=0; i<res.length; i++ ){
-
-                        if( !dataSet.has( res[i].Name ) ){
-
-                            this.setState( { data: this.state.data.concat( res[i].Name ) } );
-                            dataSet.add( res[i].Name );
-
-                        }
-                        
-                    }
-
-                    if ( this.state.data.indexOf( value ) !== -1 ){
-
-                        const itemDetailData = { Name : value };
-
-                        const res = await req.item.detail( itemDetailData );
-
-                        this.setState({
-
-                            cart: this.state.cart.map( ( c ) => {
-
-                                    if ( c.id !== id ) return c;
-                                    return { ...c, 'AQty': res.Qty,'Unit': res.Unit }
-
-                            })
-
-                        });
-
-                    }
-                }
-                
-            } , timeOutValue ) ;
+              cart: this.state.cart.map((c) => {
+                if (c.id !== id) return c;
+                return { ...c, AQty: res.Qty, Unit: res.Unit };
+              }),
+            });
+          }
         }
+      }, timeOutValue);
     }
+  };
 
-    submitItem = async () => {
+  submitItem = async () => {
+    let newCart = [];
 
-        let newCart = [];
+    this.state.cart.map((c) => newCart.push({ Name: c.Name, Qty: c.Qty }));
 
-        this.state.cart.map( ( c ) => ( newCart.push ( { Name: c.Name, Qty: c.Qty } ) ) );
+    const purchaseData = {
+      SellerName: this.state.sellerName,
+      Items: newCart,
+    };
 
-        const purchaseData = {
+    await req.purchase.create(purchaseData);
 
-            SellerName : this.state.sellerName,
-            Items      : newCart
+    this.setState({ cart: [], sellerName: "" });
+    this.handleClose();
+    alert("Successfully Purchased");
+  };
 
-        }
-        
-        await req.purchase.create( purchaseData );
+  componentDidMount() {
+    this.addItem();
+    dataSet.clear();
+    sellerDataSet.clear();
+  }
 
-        this.setState( { cart: [], sellerName: '' } );
-        this.handleClose();
-        alert("Successfully Purchased") 
+  render() {
+    const { Name, data, cart, popperStatus, submitDisabled, helperText, sellerData, Error } = this.state;
 
-    }
+    return (
+      <div>
+        <MyTextField
+          key={0}
+          className='col-4 col-s-4'
+          name='sellerName'
+          value={Name}
+          onChange={this.handleSellerChange}
+          type='text'
+          label='SELLER NAME'
+          error={Error}
+          helperText={helperText}
+          datalist={sellerData}
+        />
 
+        {cart.map((item, index) => (
+          <div key={item.id} className='item-container'>
+            <ItemTable
+              data={data}
+              item={item}
+              deleteItem={this.deleteItem}
+              index={index}
+              handleChange={this.handleChange}
+              handleOtherChange={this.handleOtherChange}
+            />
+            <Divider />
+          </div>
+        ))}
 
-    componentDidMount(){
+        <MyFloatingButton onClick={this.addItem} />
+        <MyFloatingButton onClick={this.handleOpen} done disabled={cart.length && !Error ? false : true} />
 
-        this.addItem();
-        dataSet.clear();
-        sellerDataSet.clear();
-        
-    }
+        <Dialog
+          open={popperStatus}
+          onClose={this.handleClose}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+          fullWidth
+          maxWidth='md'>
+          <DialogTitle id='alert-dialog-title'>{"Confirm Items"}</DialogTitle>
 
-    render() {
+          <DialogContent>
+            <ItemPopup data={data} cart={cart} />
+          </DialogContent>
 
-        const { Name, data, cart, popperStatus, submitDisabled, helperText, sellerData, Error } = this.state;
-
-        return (
-
-            <div>
-
-                <MyTextField 
-                    key={0}
-                    className='col-4 col-s-4'
-                    name='sellerName'
-                    value={Name}
-                    onChange={this.handleSellerChange}
-                    type='text'
-                    label='SELLER NAME'
-                    error={Error}
-                    helperText={helperText}
-                    datalist={sellerData}
-                    />
-
-                {
-                    cart.map((item, index) => (
-
-                        <div key={item.id} className='item-container'>
-
-                            <ItemTable 
-                                data={data} 
-                                item={item} 
-                                deleteItem={this.deleteItem} 
-                                index={index} 
-                                handleChange={this.handleChange} 
-                                handleOtherChange={this.handleOtherChange}
-                            /> 
-                            <Divider /> 
-
-                        </div>
-
-                    ))
-
-                }
-
-                <MyFloatingButton onClick={this.addItem} />
-                <MyFloatingButton onClick={this.handleOpen} done  disabled={cart.length && !Error ? false : true }   />
-
-                <Dialog
-                    open={popperStatus}
-                    onClose={this.handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    fullWidth
-                    maxWidth='md'
-                >
-
-                    <DialogTitle id="alert-dialog-title">{"Confirm Items"}</DialogTitle>
-
-                    <DialogContent>
-                        <ItemPopup data={data} cart={cart} />
-                    </DialogContent>
-
-                    <DialogActions>
-
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={this.submitItem} color="primary" autoFocus disabled={submitDisabled} >
-                            Submit
-                        </Button>
-
-                    </DialogActions>
-
-                </Dialog>
-
-            </div>
-
-        );
-
-    }
-
+          <DialogActions>
+            <Button onClick={this.handleClose} color='primary'>
+              Cancel
+            </Button>
+            <Button onClick={this.submitItem} color='primary' autoFocus disabled={submitDisabled}>
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 }
-
 
 export default Purchase;

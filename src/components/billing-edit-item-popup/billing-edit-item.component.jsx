@@ -135,15 +135,16 @@ class BillingEditItemPopup extends Component {
   };
 
   submitItem = async () => {
-    let newCart = [];
+    let newCart = {};
 
-    this.state.cart.map((c) => newCart.push({ Name: c.Name, Qty: c.Qty }));
+    this.state.cart.map((c) => (newCart[c.Name] = c.Qty));
 
     const purchaseData = {
+      SaleID: this.props.bid,
       Items: newCart,
     };
 
-    await req.purchase.create(purchaseData);
+    await req.sale.update(purchaseData);
 
     this.setState({ cart: [] });
     this.handleClose();

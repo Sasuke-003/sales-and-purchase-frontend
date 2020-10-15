@@ -97,7 +97,7 @@ class BillingHistoryDisplay extends React.Component {
   };
 
   handleDeleteClick = async () => {
-    const billingDeleteData = { _id: this.props.billingHistory._id };
+    const billingDeleteData = { SaleID: this.state.bid };
     await req.sale.delete(billingDeleteData);
     alert("Successfully Deleted");
     this.handleDeleteClose();
