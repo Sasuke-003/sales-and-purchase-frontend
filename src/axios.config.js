@@ -27,7 +27,13 @@ axios.interceptors.response.use(
     },
     async err =>  {
         log.response( err );
-        switch ( err.response.data.code ) {
+        const code = err?.response?.data?.code 
+        if( code === undefined ){
+            // If Server isn't running
+            console.warn( "FAILED:  Cannot reach the server" );
+            return Promise.reject( err?.response?.data  );
+        }
+        else switch ( code ) {
 
             case 2 : // code(2) -> Token Invalid
             case 4 : // code(4) -> Refresh Token Expired
@@ -44,7 +50,6 @@ axios.interceptors.response.use(
 
             default : if ( err.response.data.info ) alert( err.response.data.info );
         }
-        return Promise.reject( err?.response?.data  );
     });
 
 req.auth.newRefreshToken();
