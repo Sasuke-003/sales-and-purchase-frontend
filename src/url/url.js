@@ -1,9 +1,13 @@
 import axios from "axios";
+import moment from 'moment';
 import { ToItemQtyPairJson, ToItemQtyPairList } from "../util";
+import { store } from '../redux/store' ;
+import { setCurrentUser } from '../redux/user/user.actions' ;
 
 export const URL = {
   login: "/user/login",
   signup: "/user/signup",
+  signOut : '/user/logout',
 
   item: "/item?ItemName=",
   itemAdd: "/item/add",
@@ -24,16 +28,27 @@ export const URL = {
   saleDetail: "/sale/detail?SaleID=",
   saleDelete: "/sale/delete",
   saleUpdate: "/sale/update",
+
+  newRefreshToken : '/token/refresh-token',
+  newAccessToken  : '/token/access-token',
 };
 
 export const req = {
   user: {
-    login: async (data) => {
-      return await axios.post(URL.login, data);
+    signup: async (data) => { return await axios.post(URL.signup, data); },
+    login:  async (data) => { 
+        localStorage.setItem( "nextRefreshTime" , moment().add(1,'days') );
+        const resData = await axios.post(URL.login, data);
+        axios.defaults.headers.common['Authorization'] = resData.AccessToken;
+        return resData;
     },
-    signup: async (data) => {
-      return await axios.post(URL.signup, data);
-    },
+    signOut : async ( ) => { 
+        axios.get( URL.signOut ); 
+        localStorage.clear();
+        // Clears all Cookie  ( From : https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript )
+        document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+        store.dispatch(setCurrentUser(null));
+    }
   },
 
   item: {
@@ -138,4 +153,31 @@ export const req = {
       return await axios.post(URL.saleUpdate, data);
     },
   },
+
+  auth : {
+    newRefreshToken : async () => {
+        // Next Refresh Time of Refresh Token
+        const nextRefreshTime = localStorage.getItem( "nextRefreshTime" );
+
+        if ( moment(nextRefreshTime) < moment() ) {
+            localStorage.setItem( "nextRefreshTime" , moment().add(1,'days') )
+            const res = await axios.get( URL.newRefreshToken );
+            axios.defaults.headers.common['Authorization'] = res.AccessToken ;
+            return res;
+        }
+    },
+    newAccessToken : async ( failedReq ) => {
+
+        const res = await axios.get( URL.newAccessToken );
+        axios.defaults.headers.common['Authorization'] = res.AccessToken ;
+
+        // If there is any failed request then retry it
+        if ( failedReq ) {
+            failedReq.headers[ 'Authorization']  = res.AccessToken ;
+            failedReq.data = JSON.parse( `${failedReq.data}` ) ;
+            return await axios.request( failedReq ) ; 
+        }
+        return res;
+    },
+}
 };
