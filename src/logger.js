@@ -7,7 +7,7 @@ export class Logger {
     request( req ){
         console.warn( `Request : ${( this.reqID )}, url : ${req.url}` ) ; 
         console.log( req.data ) ;
-        req.reqID = this.reqID ;
+        req.reqID   = this.reqID ;
         this.reqID += 1 ;
     }
 
@@ -16,7 +16,7 @@ export class Logger {
         console.warn( `~Response : ${( resInfo?.reqID )}, url : ${resInfo?.url}` ) ;
         
         const okCode = res?.data?.code;
-        const  errCode = res?.response?.data?.code ;
+        const errCode = res?.response?.data?.code ;
 
         if( okCode !== undefined ){
             console.warn( `Code: ${okCode}`)

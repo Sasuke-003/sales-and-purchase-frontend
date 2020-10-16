@@ -7,6 +7,7 @@ const log = new Logger();
 
 axios.defaults.baseURL = 'http://localhost:9999';
 axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Authorization'] = "";
 
 axios.interceptors.request.use( async req => {
     log.request( req );
@@ -30,18 +31,26 @@ axios.interceptors.response.use(
         const code = err?.response?.data?.code 
         if( code === undefined ){
             // If Server isn't running
-            console.warn( "FAILED:  Cannot reach the server" );
+            console.warn( "FAILED:  Cannot reach the server or invalid URL" );
             return Promise.reject( err?.response?.data  );
         }
         else switch ( code ) {
 
             case 2 : // code(2) -> Token Invalid
-            case 4 : // code(4) -> Refresh Token Expired
+            case 9 : // code(9) -> Refresh Token Expired
 
                 // Force Sign Out
                 req.user.signOut(); break;
 
-            case 3 : // code(4) -> Access Token Expired - Get new Access Token And Retry the Request
+            // code(11) -> Access Token Not Found
+            // This happens during reload, first accTok will be sent as empty String for first req
+            // which will be marked as failed and then a req will be made to get new accTok
+            // Once accTok is received, then failedReq will be re-tried 
+            case 11 : // Since this happens only once during reload a request to obtain new refTok is made
+                await req.auth.newRefreshToken();
+                // Falls through so that failed req can be retried
+
+            case 8  : // code(8)  -> Access Token Expired - Get new Access Token And Retry the Request
             
                 const failedReq = err.config;
 
@@ -51,6 +60,3 @@ axios.interceptors.response.use(
             default : if ( err.response.data.info ) alert( err.response.data.info );
         }
     });
-
-req.auth.newRefreshToken();
-req.auth.newAccessToken();

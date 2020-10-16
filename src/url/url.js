@@ -5,9 +5,9 @@ import { store } from '../redux/store' ;
 import { setCurrentUser } from '../redux/user/user.actions' ;
 
 export const URL = {
-  login: "/user/login",
-  signup: "/user/signup",
-  signOut : '/user/logout',
+  signIn  : "/user/sign-in",
+  signUp  : "/user/sign-up",
+  signOut : '/user/sign-out',
 
   item: "/item?ItemName=",
   itemAdd: "/item/add",
@@ -29,25 +29,22 @@ export const URL = {
   saleDelete: "/sale/delete",
   saleUpdate: "/sale/update",
 
-  newRefreshToken : '/token/refresh-token',
-  newAccessToken  : '/token/access-token',
+  newRefreshToken : '/token/ref-tok',
+  newAccessToken  : '/token/acc-tok',
 };
 
 export const req = {
   user: {
-    signup: async (data) => { return await axios.post(URL.signup, data); },
-    login:  async (data) => { 
+    signUp: async (data) => { return await axios.post(URL.signUp, data); },
+    signIn:  async (data) => { 
         localStorage.setItem( "nextRefreshTime" , moment().add(1,'days') );
-        const resData = await axios.post(URL.login, data);
+        const resData = await axios.post(URL.signIn, data);
         axios.defaults.headers.common['Authorization'] = resData.AccessToken;
         return resData;
     },
-    signOut : async ( ) => { 
-        axios.get( URL.signOut ); 
-        localStorage.clear();
-        // Clears all Cookie  ( From : https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript )
-        document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-        store.dispatch(setCurrentUser(null));
+    signOut : async () => { 
+      clearAllData();
+      await axios.get( URL.signOut ); 
     }
   },
 
@@ -158,7 +155,7 @@ export const req = {
     newRefreshToken : async () => {
         // Next Refresh Time of Refresh Token
         const nextRefreshTime = localStorage.getItem( "nextRefreshTime" );
-
+        if( !nextRefreshTime ) clearAllData();
         if ( moment(nextRefreshTime) < moment() ) {
             localStorage.setItem( "nextRefreshTime" , moment().add(1,'days') )
             const res = await axios.get( URL.newRefreshToken );
@@ -174,10 +171,17 @@ export const req = {
         // If there is any failed request then retry it
         if ( failedReq ) {
             failedReq.headers[ 'Authorization']  = res.AccessToken ;
-            failedReq.data = JSON.parse( `${failedReq.data}` ) ;
+            if( failedReq.data ) failedReq.data = JSON.parse( `${failedReq.data}` ) ;
             return await axios.request( failedReq ) ; 
         }
         return res;
     },
 }
 };
+
+function clearAllData(){
+    localStorage.clear();
+    // Clears all Cookie  ( From : https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript )
+    document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+    store.dispatch(setCurrentUser(null));
+}

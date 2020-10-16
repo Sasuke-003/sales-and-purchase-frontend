@@ -1,5 +1,4 @@
 import React from 'react';
-import Axios from 'axios';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 
@@ -30,7 +29,7 @@ import { setCurrentUser } from '../../redux/user/user.actions'
 
 
 import './header.styles.scss';
-
+import { req } from '../../url/url'
 
 
 const useStyles = makeStyles( ( theme ) => ({
@@ -219,7 +218,7 @@ const Header = ( { currentUser, setCurrentUser, history } ) => {
 
               currentUser ?
 
-                  <Button color='inherit' className='option'  onClick={() => {setCurrentUser(null); Axios.post( '/user/logout' ) ; }}>
+                  <Button color='inherit' className='option'  onClick={ () => { req.user.signOut(); }}>
                       LOG OUT
                   </Button>
 

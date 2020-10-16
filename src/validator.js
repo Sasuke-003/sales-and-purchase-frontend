@@ -1,9 +1,9 @@
 const { user, item, seller, sale, purchase, auth } = require( './validator.config.js' ) ;
 const validator = {
 
-    "/user/login"  : user.login,
-    "/user/logout" : user.logout,
-    "/user/signup" : user.signup,
+    "/user/sign-up"  : user.signUp,
+    "/user/sign-in"  : user.signIn,
+    "/user/sign-out" : user.signOut,
 
     "/item"        : item.search,
     "/item/add"    : item.add, 
@@ -27,12 +27,22 @@ const validator = {
     "/purchase/list-all" : purchase.listAll,
     "/purchase/list-my"  : purchase.listMy,
 
-    "/token/refresh-token" : auth.refreshToken,
-    "/token/access-token"  : auth.accessToken,
+    "/token/ref-tok" : auth.refreshToken,
+    "/token/acc-tok" : auth.accessToken,
     
     } ;
     
     export const validate = async ( req ) => {
-        try           { await validator[ req.url ].validateAsync( req.data ) ; return req ; }
-        catch ( err ) { alert ( err.details[0].message ); throw err  ;                      }
+        try { 
+            if( req.method === 'post' ) await validator[ req.url ].validateAsync( req.data );
+            console.log("VALIDATED"); // -deb
+        }
+        catch ( err ) {
+            const msg = err?.details[0]?.message;
+
+            if( msg ) alert ( msg );
+            else { console.log( err ); alert( "Unknown Validation error"); }
+
+            throw err  ;
+            }
     }

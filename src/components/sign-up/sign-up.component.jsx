@@ -68,7 +68,7 @@ class SignUp extends Component {
 
         if ( !this.state.isPasswordError ){
 
-            await req.user.signup( signupData ); 
+            await req.user.signUp( signupData ); 
             alert("successfully Registered")  
         
         }

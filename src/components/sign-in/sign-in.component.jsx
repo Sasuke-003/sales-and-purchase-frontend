@@ -41,7 +41,7 @@ class SignIn extends Component {
     };
 
     try {
-      const res = await req.user.login(signinData);
+      const res = await req.user.signIn(signinData);
 
       axios.defaults.headers.common["Authorization"] = res.AccessToken;
       const userData = jwt_decode(res.AccessToken);
