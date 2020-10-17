@@ -4,12 +4,12 @@ import { validate, valid } from '../validator/validator';
 const validPurchase = valid.purchase;
 
 const url = {
-    list   : "/purchase/list"   ,
-    create : "/purchase/create" ,
-    update : "/purchase/update" ,
-    delete : "/purchase/delete" ,
-    detail : "/purchase/detail" ,
-    editHistory : "/purchase/edit-history" 
+    list      : "/purchase/list"       ,
+    create    : "/purchase/create"     ,
+    update    : "/purchase/update"     ,
+    delete    : "/purchase/delete"     ,
+    detail    : "/purchase/detail"     ,
+    listEdits : "/purchase/list-edits" ,
 }
 
 export const purchase = {
@@ -40,6 +40,12 @@ export const purchase = {
     delete : async ( PurchaseID ) => {
         await validate( validPurchase.delete, { PurchaseID } );
         return await axios.post( url.update, { PurchaseID } );
+    },
+
+    listEdits : async ( PurchaseID, EditIndex = 0 ) => {
+        await validate( validPurchase.listEdits, { PurchaseID, EditIndex } );
+        const query = `?PurchaseID=${PurchaseID}&EditIndex=${EditIndex}`;
+        return await axios.get( url.listEdits + query );
     },
 
 }
