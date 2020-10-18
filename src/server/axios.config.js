@@ -1,6 +1,6 @@
-import   axios      from 'axios';
-import { api } from './api';
-import { Logger   } from './logger';
+import   axios    from 'axios';
+import { api    } from './api';
+import { Logger } from './logger';
 
 const log = new Logger();
 

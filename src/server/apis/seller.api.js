@@ -1,5 +1,5 @@
 import axios from "axios";
-import { validate, valid } from '../validator/validator';
+import { validate, valid } from '../validator';
 
 const validSeller = valid.seller;
 
@@ -7,8 +7,6 @@ const url = {
     search : "/seller"     ,
     add    : "/seller/add" ,
 }
-
-
 
 export const seller = {
 
