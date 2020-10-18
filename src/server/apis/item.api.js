@@ -1,5 +1,5 @@
 import axios from "axios";
-import { validate, valid } from '../validator/validator';
+import { validate, valid } from '../validator';
 
 const validItem = valid.item;
 

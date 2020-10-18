@@ -1,7 +1,7 @@
 import axios from "axios";
 import moment from "moment";
 
-import { validate, valid } from '../validator/validator';
+import { validate, valid } from '../validator';
 import { store } from '../../redux/store' ;
 import { setCurrentUser } from '../../redux/user/user.actions' ;
 
