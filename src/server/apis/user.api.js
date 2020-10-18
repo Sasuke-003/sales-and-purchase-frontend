@@ -1,4 +1,6 @@
 import axios from "axios";
+import moment from "moment";
+
 import { validate, valid } from '../validator/validator';
 import { store } from '../../redux/store' ;
 import { setCurrentUser } from '../../redux/user/user.actions' ;
@@ -19,8 +21,14 @@ export const user = {
     },
 
     signIn : async ( signInData ) => {
+        
         await validate( validUser.signIn, signInData );
-        return await axios.post( url.signIn, signInData );
+        const res =  await axios.post( url.signIn, signInData );
+        
+        axios.defaults.headers.common["Authorization"] = res.AccessToken;       
+        localStorage.setItem( "nextRefreshTime" , moment().add(1,'days') );
+
+        return res;
     },
 
     signOut : async () => { clearAllData(); return await axios.get( url.signOut ); }
@@ -34,4 +42,3 @@ function clearAllData(){
     document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
     store.dispatch(setCurrentUser(null));
 }
-    
