@@ -1,7 +1,7 @@
 import axios from "axios";
 import { validate, valid } from '../validator/validator';
-import { store } from '../../../redux/store' ;
-import { setCurrentUser } from '../../../redux/user/user.actions' ;
+import { store } from '../../redux/store' ;
+import { setCurrentUser } from '../../redux/user/user.actions' ;
 
 const validUser = valid.user;
 

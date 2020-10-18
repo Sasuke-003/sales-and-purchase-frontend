@@ -47,8 +47,8 @@ axios.interceptors.response.use(
 
             case 11 : // code(11) -> Access Token Not Found
                 // Since this happens only once while reloading the page, a request to obtain new refTok is made.
-                // And after successfully obtaining the new token, "failedReq" will be retried
-                return await api.token.newRefreshToken( failedReq ) ;
+                await api.token.newRefreshToken() ;
+                // falls through after successfully obtaining the new token, ( obtains only if timed out -> present in localStorage as "nextRefreshTime" )
 
             case 8  : // code(8) -> Access Token Expired - Get new Access Token And Retry "failedReq" ( happens automatically )
                 return await api.token.newAccessToken( failedReq );

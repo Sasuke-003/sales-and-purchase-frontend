@@ -1,6 +1,6 @@
 import axios  from "axios";
 import moment from 'moment';
-import { user } from './user.req';
+import { user } from './user.api';
 
 
 const url = {
@@ -17,7 +17,7 @@ export const token = {
         return res;
     },
 
-    newRefreshToken : async ( reqToBeRetried ) => {
+    newRefreshToken : async () => {
 
         // Next Refresh Time of Refresh Token
         const nextRefreshTime = localStorage.getItem( "nextRefreshTime" );
@@ -28,11 +28,9 @@ export const token = {
                 localStorage.setItem( "nextRefreshTime" , moment().add(1,'days') )
                 const res = await axios.get( url.newRefTok );
                 axios.defaults.headers.common['Authorization'] = res.AccessToken ;
-                if( !reqToBeRetried ) return res;
+                return res;
             }
-    
-            if( reqToBeRetried ) return await retryReq( reqToBeRetried );
-    
+
         } catch( err ) {
             await user.signOut();
             throw err;
