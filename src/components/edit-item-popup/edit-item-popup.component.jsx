@@ -192,7 +192,6 @@ class EditItemPopup extends Component {
 
     submitItem = async () => {
         let newCart = {};
-
         this.state.cart.map((c) => (newCart[c.Name] = c.Qty));
 
         const purchaseData = {
@@ -201,12 +200,13 @@ class EditItemPopup extends Component {
             Items: newCart,
         };
 
-        await purchase.update(purchaseData);
-
-        this.setState({ cart: [] });
-        this.handleClose();
-        alert("Successfully Purchased");
-        window.location.reload(false);
+        try {
+            await purchase.update(purchaseData);
+            alert("Successfully Purchased");
+            this.setState({ cart: [] });
+            this.handleClose();
+            window.location.reload(false);
+        } catch (error) {}
     };
 
     componentDidMount = async () => {

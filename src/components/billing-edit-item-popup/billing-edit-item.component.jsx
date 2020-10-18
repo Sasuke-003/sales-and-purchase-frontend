@@ -150,11 +150,13 @@ class BillingEditItemPopup extends Component {
             Items: newCart,
         };
 
-        await sale.update(purchaseData);
-        this.setState({ cart: [] });
-        this.handleClose();
-        alert("Successfully Purchased");
-        window.location.reload(false);
+        try {
+            await sale.update(purchaseData);
+            this.setState({ cart: [] });
+            this.handleClose();
+            alert("Successfully Purchased");
+            window.location.reload(false);
+        } catch (error) {}
     };
 
     componentDidMount = async () => {

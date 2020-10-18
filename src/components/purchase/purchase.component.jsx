@@ -199,11 +199,12 @@ class Purchase extends Component {
             Items: newCart,
         };
 
-        await purchase.create(purchaseData);
-
-        this.setState({ cart: [], sellerName: "" });
-        this.handleClose();
-        alert("Successfully Purchased");
+        try {
+            await purchase.create(purchaseData);
+            alert("Successfully Purchased");
+            this.setState({ cart: [], sellerName: "" });
+            this.handleClose();
+        } catch (error) {}
     };
 
     componentDidMount() {

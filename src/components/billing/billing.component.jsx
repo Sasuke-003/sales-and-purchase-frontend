@@ -146,11 +146,12 @@ class Billing extends Component {
             Items: newCart,
         };
 
-        await sale.create(billingData);
-
-        this.setState({ cart: [] });
-        this.handleClose();
-        alert("Successfully Purchased");
+        try {
+            await sale.create(billingData);
+            alert("Successfully Purchased");
+            this.setState({ cart: [] });
+            this.handleClose();
+        } catch (error) {}
     };
 
     componentDidMount() {
