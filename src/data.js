@@ -1,24 +1,15 @@
-import { req } from './url/url'
-
+import { item } from "./server/apis/item.api";
 
 let unitStore = new Map();
 
+export const reqItemUnit = async (name) => {
+    if (!unitStore.has(name)) {
+        const res = await item.detail(name);
 
-export const reqItemUnit = async  (name) => {
-
-    if(!unitStore.has(name)){
-
-        const itemDetailData = { Name : name }
-
-        const res = await req.item.detail( itemDetailData );
-
-        unitStore.set( name, res.Unit );
+        unitStore.set(name, res.Unit);
 
         return res.Unit;
-
     }
 
-    return unitStore.get( name );
-
-}
-
+    return unitStore.get(name);
+};

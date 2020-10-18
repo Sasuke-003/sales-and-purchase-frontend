@@ -1,149 +1,108 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
+import MyButton from "../my-button/my-button";
+import InputField from "../input-field/inputfield.component";
 
-import MyButton from '../my-button/my-button';
-import InputField from '../input-field/inputfield.component'
+import { seller } from "../../server/apis/seller.api.js";
 
-
-import { req } from '../../url/url'
-
-
-let timerID ;
-const timeOutValue = 500 ;
+let timerID;
+const timeOutValue = 500;
 let sellerDataSet = new Set();
 
-
 class Seller extends Component {
-
     constructor() {
         super();
-        
+
         this.state = {
-
-            Name       : '',
-            Error      : false,
-            helperText : '',
-            data       : [],
-
+            Name: "",
+            Error: false,
+            helperText: "",
+            data: [],
         };
-
     }
 
-   
-
-    handleChange = event => {
-
+    handleChange = (event) => {
         let error = false;
-        let helperText = '';
+        let helperText = "";
         const { name, value } = event.target;
 
-        this.setState( {  [name]: value } );
+        this.setState({ [name]: value });
 
-        if ( timerID ) clearTimeout( timerID ) ;
+        if (timerID) clearTimeout(timerID);
 
-        timerID = setTimeout( async () =>{
+        timerID = setTimeout(async () => {
+            timerID = undefined;
+            const searchData = value;
 
-            timerID = undefined ;
-            const searchData = { S : value };
-
-            if (  searchData.S !== ''){
-
-                const res = await req.seller.autoCompleteData( searchData );
-
-                for( let i=0; i<res.length; i++ ){
-
-                    if(!sellerDataSet.has(res[i].Name)){
-
-                        this.setState( { data: this.state.data.concat( res[i].Name ) } );
-                        sellerDataSet.add( res[i].Name );
-
+            if (searchData !== "") {
+                let res = await seller.autoCompleteData(searchData);
+                let arr = [];
+                if (res) {
+                    for (let i = 0; i < res.SellerNames.length; i++) {
+                        arr.push({ Name: res.SellerNames[i] });
                     }
-
                 }
-
+                res = arr;
+                for (let i = 0; i < res.length; i++) {
+                    if (!sellerDataSet.has(res[i].Name)) {
+                        this.setState({ data: this.state.data.concat(res[i].Name) });
+                        sellerDataSet.add(res[i].Name);
+                    }
+                }
             }
+        }, timeOutValue);
 
-        } , timeOutValue ) ;
-
-        if ( this.state.data.indexOf( value ) !== -1 ){
-
+        if (this.state.data.indexOf(value) !== -1) {
             error = true;
-            helperText = 'This Seller is already added';
-
-        }
-        else if( value === '' ){
-
+            helperText = "This Seller is already added";
+        } else if (value === "") {
             error = true;
-            helperText = 'Seller name cannot be empty';
-
+            helperText = "Seller name cannot be empty";
         }
 
         this.setState({
             Error: error,
-            helperText: helperText
-        })
+            helperText: helperText,
+        });
+    };
 
-    }
-
-    handleSubmit = async ( event ) => {
-
+    handleSubmit = async (event) => {
         event.preventDefault();
 
         const sellerData = {
+            Name: this.state.Name,
+        };
 
-            Name: this.state.Name
-
-        }
-
-        if (!this.state.Error){
-            try{
-
-                await req.seller.add( sellerData );
+        if (!this.state.Error) {
+            try {
+                await seller.add(sellerData);
 
                 alert("successfully Registered");
 
                 this.setState({
-                    Name       : '',
-                    Error      : false,
-                    helperText : '',
-                }) ;
-
-
+                    Name: "",
+                    Error: false,
+                    helperText: "",
+                });
+            } catch (error) {
+                alert(" something went wring try again ");
             }
-            catch( error ){
-
-                alert( ' something went wring try again ' )
-
-            }
-
+        } else {
+            alert("Enter valid Name");
         }
-        else{
+    };
 
-            alert('Enter valid Name')
-            
-        }
-
-    }
-
-
-    componentDidMount(){
-
+    componentDidMount() {
         sellerDataSet.clear();
-        
     }
-
 
     render() {
-
         const { Name, Error, data, helperText } = this.state;
 
         return (
-
             <div className='sign-up'>
-            
-                <form onSubmit={this.handleSubmit} >
-
-                    <InputField 
+                <form onSubmit={this.handleSubmit}>
+                    <InputField
                         className='col-4 col-s-4'
                         name='Name'
                         value={Name}
@@ -158,16 +117,10 @@ class Seller extends Component {
                     <MyButton className='button' variant='contained' type='submit' color='secondary'>
                         ADD SELLER
                     </MyButton>
-
                 </form>
-
             </div>
-
         );
-
     }
-
 }
-
 
 export default Seller;

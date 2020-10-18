@@ -19,221 +19,223 @@ import ViewItemPopup from "../view-item-popup/view-item-popup.component";
 import EditItemPopup from "../edit-item-popup/edit-item-popup.component";
 
 import { reqItemUnit } from "../../data";
-import { req } from "../../url/url";
+
+import { purchase } from "../../server/apis/purchase.api.js";
+
+import { ToItemQtyPairList } from "../../util";
 
 class HistoryDisplay extends React.Component {
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    this.state = {
-      historyData: [],
-      pid: "",
-      sellerName: "",
-      editPopper: false,
-      deletePopper: false,
-      viewPopper: false,
-    };
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
-  setHistoryData = async () => {
-    const { historyData } = this.state;
-    const { purchaseHistory } = this.props;
-    const purchaseDetailData = { _id: purchaseHistory._id };
-
-    this.setState({ sellerName: purchaseHistory.SellerName, pid: purchaseHistory._id });
-
-    if (historyData.length === 0) {
-      const res = await req.purchase.detail(purchaseDetailData);
-
-      for (let i = 0; i < res.Items.length; i++) {
-        this.setState({
-          historyData: this.state.historyData.concat({
-            Name: res.Items[i].Name,
-            Qty: res.Items[i].Qty,
-            Unit: await reqItemUnit(res.Items[i].Name),
-          }),
-        });
-      }
+        this.state = {
+            historyData: [],
+            pid: "",
+            sellerName: "",
+            editPopper: false,
+            deletePopper: false,
+            viewPopper: false,
+        };
     }
-  };
 
-  idToDate = (id) => {
-    return moment(parseInt(id.substring(0, 8), 16) * 1000).format("DD/MM/YYYY-hh:mm:ss A");
-  };
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
 
-  handleEditOpen = async () => {
-    await this.setHistoryData();
-    this.setState({
-      editPopper: true,
-    });
-  };
-  handleEditClose = () => {
-    this.setState({
-      editPopper: false,
-    });
-  };
-  handleDeleteOpen = () => {
-    this.setState({
-      deletePopper: true,
-    });
-    this.setHistoryData();
-  };
-  handleDeleteClose = () => {
-    this.setState({
-      deletePopper: false,
-    });
-  };
-  handleViewOpen = async () => {
-    this.setState({
-      viewPopper: true,
-    });
-    this.setHistoryData();
-  };
-  handleViewClose = () => {
-    this.setState({
-      viewPopper: false,
-    });
-  };
+    setHistoryData = async () => {
+        const { historyData } = this.state;
+        const { purchaseHistory } = this.props;
 
-  handleDeleteClick = async () => {
-    const purchaseDeleteData = { PurchaseID: this.state.pid };
-    await req.purchase.delete(purchaseDeleteData);
-    alert("Successfully Deleted");
-    this.handleDeleteClose();
-    this.props.setHistoryToState();
-  };
+        this.setState({ sellerName: purchaseHistory.SellerName, pid: purchaseHistory._id });
 
-  render() {
-    const { purchaseHistory } = this.props;
+        if (historyData.length === 0) {
+            let res = await purchase.detail(purchaseHistory._id);
+            res = { Items: ToItemQtyPairList(res.Items) };
 
-    const { deletePopper, editPopper, viewPopper, historyData, sellerName, pid } = this.state;
+            for (let i = 0; i < res.Items.length; i++) {
+                this.setState({
+                    historyData: this.state.historyData.concat({
+                        Name: res.Items[i].Name,
+                        Qty: res.Items[i].Qty,
+                        Unit: await reqItemUnit(res.Items[i].Name),
+                    }),
+                });
+            }
+        }
+    };
 
-    return (
-      <Card>
-        <CardContent>
-          <TableContainer>
-            <Table aria-label='simple table'>
-              <TableBody>
-                <TableRow key={purchaseHistory._id + 0}>
-                  <TableCell component='th' scope='row' size='small' padding='checkbox'>
-                    PURCHASED BY
-                  </TableCell>
+    idToDate = (id) => {
+        return moment(parseInt(id.substring(0, 8), 16) * 1000).format("DD/MM/YYYY-hh:mm:ss A");
+    };
 
-                  <TableCell size='small'>{purchaseHistory.UserName}</TableCell>
-                </TableRow>
+    handleEditOpen = async () => {
+        await this.setHistoryData();
+        this.setState({
+            editPopper: true,
+        });
+    };
+    handleEditClose = () => {
+        this.setState({
+            editPopper: false,
+        });
+    };
+    handleDeleteOpen = () => {
+        this.setState({
+            deletePopper: true,
+        });
+        this.setHistoryData();
+    };
+    handleDeleteClose = () => {
+        this.setState({
+            deletePopper: false,
+        });
+    };
+    handleViewOpen = async () => {
+        this.setState({
+            viewPopper: true,
+        });
+        this.setHistoryData();
+    };
+    handleViewClose = () => {
+        this.setState({
+            viewPopper: false,
+        });
+    };
 
-                <TableRow key={purchaseHistory._id + 1}>
-                  <TableCell component='th' scope='row' size='small'>
-                    PURCHASED FROM
-                  </TableCell>
+    handleDeleteClick = async () => {
+        await purchase.delete(this.state.pid);
+        alert("Successfully Deleted");
+        this.handleDeleteClose();
+        this.props.setHistoryToState();
+    };
 
-                  <TableCell size='small'>{purchaseHistory.SellerName}</TableCell>
-                </TableRow>
+    render() {
+        const { purchaseHistory } = this.props;
 
-                <TableRow key={purchaseHistory._id + 2}>
-                  <TableCell component='th' scope='row' size='small'>
-                    ITEM COUNT
-                  </TableCell>
+        const { deletePopper, editPopper, viewPopper, historyData, sellerName, pid } = this.state;
 
-                  <TableCell size='small'>{purchaseHistory.ItemCount}</TableCell>
-                </TableRow>
+        return (
+            <Card>
+                <CardContent>
+                    <TableContainer>
+                        <Table aria-label='simple table'>
+                            <TableBody>
+                                <TableRow key={purchaseHistory._id + 0}>
+                                    <TableCell component='th' scope='row' size='small' padding='checkbox'>
+                                        PURCHASED BY
+                                    </TableCell>
 
-                <TableRow key={purchaseHistory._id + 3}>
-                  <TableCell component='th' scope='row' size='small'>
-                    PURCHASE DATE
-                  </TableCell>
+                                    <TableCell size='small'>{purchaseHistory.UserName}</TableCell>
+                                </TableRow>
 
-                  <TableCell size='small'>{this.idToDate(purchaseHistory._id)}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
+                                <TableRow key={purchaseHistory._id + 1}>
+                                    <TableCell component='th' scope='row' size='small'>
+                                        PURCHASED FROM
+                                    </TableCell>
 
-        <CardActions>
-          <Button size='small' color='primary' onClick={this.handleViewOpen}>
-            View
-          </Button>
+                                    <TableCell size='small'>{purchaseHistory.SellerName}</TableCell>
+                                </TableRow>
 
-          <Button size='small' color='primary' onClick={this.handleEditOpen}>
-            Edit
-          </Button>
+                                <TableRow key={purchaseHistory._id + 2}>
+                                    <TableCell component='th' scope='row' size='small'>
+                                        ITEM COUNT
+                                    </TableCell>
 
-          <Button size='small' color='primary' onClick={this.handleDeleteOpen}>
-            Delete
-          </Button>
-        </CardActions>
+                                    <TableCell size='small'>{purchaseHistory.ItemCount}</TableCell>
+                                </TableRow>
 
-        <Dialog
-          open={viewPopper}
-          onClose={this.handleViewClose}
-          aria-labelledby='view-popup'
-          aria-describedby='alert-dialog-description-view'
-          fullWidth
-          maxWidth='md'>
-          <DialogTitle id='view-popup'>{"ITEMS"}</DialogTitle>
+                                <TableRow key={purchaseHistory._id + 3}>
+                                    <TableCell component='th' scope='row' size='small'>
+                                        PURCHASE DATE
+                                    </TableCell>
 
-          <DialogContent>
-            <ViewItemPopup historyData={historyData} />
-          </DialogContent>
+                                    <TableCell size='small'>{this.idToDate(purchaseHistory._id)}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </CardContent>
 
-          <DialogActions>
-            <Button onClick={this.handleViewClose} color='primary' autoFocus>
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
+                <CardActions>
+                    <Button size='small' color='primary' onClick={this.handleViewOpen}>
+                        View
+                    </Button>
 
-        <Dialog
-          open={editPopper}
-          onClose={this.handleEditClose}
-          aria-labelledby='edit-popup'
-          aria-describedby='alert-dialog-description-edit'
-          fullWidth
-          maxWidth='md'>
-          <DialogTitle id='edit-popup'>{"EDIT"}</DialogTitle>
+                    <Button size='small' color='primary' onClick={this.handleEditOpen}>
+                        Edit
+                    </Button>
 
-          <DialogContent>
-            <EditItemPopup historyData={historyData} sellerName={sellerName} pid={pid} />
-          </DialogContent>
+                    <Button size='small' color='primary' onClick={this.handleDeleteOpen}>
+                        Delete
+                    </Button>
+                </CardActions>
 
-          <DialogActions>
-            <Button onClick={this.handleEditClose} color='primary'>
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
+                <Dialog
+                    open={viewPopper}
+                    onClose={this.handleViewClose}
+                    aria-labelledby='view-popup'
+                    aria-describedby='alert-dialog-description-view'
+                    fullWidth
+                    maxWidth='md'>
+                    <DialogTitle id='view-popup'>{"ITEMS"}</DialogTitle>
 
-        <Dialog
-          open={deletePopper}
-          onClose={this.handleDeleteClose}
-          aria-labelledby='delete-popup'
-          aria-describedby='alert-dialog-description-delete'
-          fullWidth
-          maxWidth='md'>
-          <DialogTitle id='delete-popup'>{"The below purchased items will be deleted!"}</DialogTitle>
+                    <DialogContent>
+                        <ViewItemPopup historyData={historyData} />
+                    </DialogContent>
 
-          <DialogContent>
-            <ViewItemPopup historyData={historyData} />
-          </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleViewClose} color='primary' autoFocus>
+                            Ok
+                        </Button>
+                    </DialogActions>
+                </Dialog>
 
-          <DialogActions>
-            <Button onClick={this.handleDeleteClose} color='primary'>
-              Cancel
-            </Button>
+                <Dialog
+                    open={editPopper}
+                    onClose={this.handleEditClose}
+                    aria-labelledby='edit-popup'
+                    aria-describedby='alert-dialog-description-edit'
+                    fullWidth
+                    maxWidth='md'>
+                    <DialogTitle id='edit-popup'>{"EDIT"}</DialogTitle>
 
-            <Button onClick={this.handleDeleteClick} color='primary' autoFocus>
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Card>
-    );
-  }
+                    <DialogContent>
+                        <EditItemPopup historyData={historyData} sellerName={sellerName} pid={pid} />
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={this.handleEditClose} color='primary'>
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Dialog
+                    open={deletePopper}
+                    onClose={this.handleDeleteClose}
+                    aria-labelledby='delete-popup'
+                    aria-describedby='alert-dialog-description-delete'
+                    fullWidth
+                    maxWidth='md'>
+                    <DialogTitle id='delete-popup'>{"The below purchased items will be deleted!"}</DialogTitle>
+
+                    <DialogContent>
+                        <ViewItemPopup historyData={historyData} />
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={this.handleDeleteClose} color='primary'>
+                            Cancel
+                        </Button>
+
+                        <Button onClick={this.handleDeleteClick} color='primary' autoFocus>
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Card>
+        );
+    }
 }
 
 export default HistoryDisplay;

@@ -1,276 +1,210 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
 
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
+import MyFloatingButton from "../my-floating-button/my-floating-button";
+import ItemTable from "../item-input/item-input.component";
+import ItemPopup from "../popup/popup.component";
 
+import { item } from "../../server/apis/item.api";
+import { sale } from "../../server/apis/sale.api";
 
-import MyFloatingButton from '../my-floating-button/my-floating-button';
-import ItemTable from '../item-input/item-input.component';
-import ItemPopup from '../popup/popup.component';
-
-
-import { req } from '../../url/url'
-
-
-let timerID ;
-const timeOutValue = 500 ;
+let timerID;
+const timeOutValue = 500;
 let s = new Set();
 
-
-const countOccurrences = ( arr, val ) => arr.reduce( ( a, v ) => ( v.Name === val ? a + 1 : a ), 0 );
-
+const countOccurrences = (arr, val) => arr.reduce((a, v) => (v.Name === val ? a + 1 : a), 0);
 
 class Billing extends Component {
-
     constructor() {
-
         super();
-        
+
         this.state = {
-
-            data           : [ ],
-            cart           : [ ],
-            popperStatus   : false,
-            submitDisabled : false,
-
-        }
-
+            data: [],
+            cart: [],
+            popperStatus: false,
+            submitDisabled: false,
+        };
     }
 
-
     handleOpen = () => {
-
-        this.setState( { popperStatus: true } );
+        this.setState({ popperStatus: true });
 
         const { data, cart } = this.state;
         let disabled = false;
 
-        for ( let i=0; i<cart.length; i++ ){
-
-            if ( data.indexOf(cart[i].Name) === -1 || cart[i].Name === '' || cart[i].Qty === '' || cart[i].Unit === '' || countOccurrences(cart, cart[i].Name) > 1  ){
-               
+        for (let i = 0; i < cart.length; i++) {
+            if (
+                data.indexOf(cart[i].Name) === -1 ||
+                cart[i].Name === "" ||
+                cart[i].Qty === "" ||
+                cart[i].Unit === "" ||
+                countOccurrences(cart, cart[i].Name) > 1
+            ) {
                 disabled = true;
                 break;
-
             }
         }
 
-        this.setState( { submitDisabled: disabled } );
-
-    }
-    
+        this.setState({ submitDisabled: disabled });
+    };
 
     handleClose = (event) => {
+        this.setState({ popperStatus: false });
+    };
 
-        this.setState( { popperStatus: false } );
-
-    }
-    
-    
     addItem = () => {
-
         this.setState({
-
-            cart:   [...this.state.cart, 
-                        {
-                                Name : '',
-                                Qty  : '',
-                                Unit : '',
-                                AQty : '',
-                                id   : Date.now()
-                        }
-                    ]
-
+            cart: [
+                ...this.state.cart,
+                {
+                    Name: "",
+                    Qty: "",
+                    Unit: "",
+                    AQty: "",
+                    id: Date.now(),
+                },
+            ],
         });
+    };
 
-    }
+    deleteItem = (id) => {
+        this.setState({ cart: this.state.cart.filter((c) => c.id !== id) });
+    };
 
-    
-    deleteItem = ( id ) => {
-
-        this.setState( { cart: this.state.cart.filter( ( c )  => c.id !== id ), } );
-
-    }
-
-
-    handleOtherChange = ( event, id ) => {
-
+    handleOtherChange = (event, id) => {
         const { name, value } = event.target;
 
         this.setState({
-
-            cart:   this.state.cart.map((c) => {
-
-                        if ( c.id !== id ) return c;
-                        return {...c, [name]: value }
-
-                    })
-
+            cart: this.state.cart.map((c) => {
+                if (c.id !== id) return c;
+                return { ...c, [name]: value };
+            }),
         });
+    };
 
-    }
-
-    handleChange = ( event, id ) => {
-
+    handleChange = (event, id) => {
         const { name, value } = event.target;
 
         this.setState({
-
-            cart:   this.state.cart.map((c) => {
-
-                        if ( c.id !== id ) return c;
-                        return {...c, [name]: value }
-
-                    })
-
+            cart: this.state.cart.map((c) => {
+                if (c.id !== id) return c;
+                return { ...c, [name]: value };
+            }),
         });
- 
-        if ( name === 'Name' ) {
 
-            if ( timerID ) clearTimeout( timerID ) ;
+        if (name === "Name") {
+            if (timerID) clearTimeout(timerID);
 
-            timerID = setTimeout( async () =>{
+            timerID = setTimeout(async () => {
+                timerID = undefined;
+                const searchData = value;
 
-                timerID = undefined ;
-                const searchData = { S: value };
-
-                if ( searchData.S !== '' ) {
-
-                    const res = await req.item.autoCompleteData( searchData );
-
-                        for( let i=0; i<res.length; i++ ) {
-
-                            if( !s.has( res[i].Name )) {
-
-                                this.setState( { data: this.state.data.concat( res[i].Name ) } );
-                                s.add(res[i].Name);
-
-                            }
-
+                if (searchData !== "") {
+                    let res = await item.search(searchData);
+                    let arr = [];
+                    if (res) {
+                        for (let i = 0; i < res.Items.length; i++) {
+                            arr.push({ Name: res.Items[i] });
                         }
+                    }
+                    res = arr;
 
-                        if ( this.state.data.indexOf( value ) !== -1 ) {
-
-                            const res = await req.item.detail( { Name: value } );
-
-                            this.setState({
-
-                                cart: this.state.cart.map( ( c ) => {
-
-                                        if ( c.id !== id ) return c;
-                                        return { ...c, 'AQty': res.Qty,'Unit': res.Unit }
-
-                                })
-
-                            });
-
+                    for (let i = 0; i < res.length; i++) {
+                        if (!s.has(res[i].Name)) {
+                            this.setState({ data: this.state.data.concat(res[i].Name) });
+                            s.add(res[i].Name);
                         }
+                    }
+
+                    if (this.state.data.indexOf(value) !== -1) {
+                        const res = await item.detail(value);
+
+                        this.setState({
+                            cart: this.state.cart.map((c) => {
+                                if (c.id !== id) return c;
+                                return { ...c, AQty: res.Qty, Unit: res.Unit };
+                            }),
+                        });
+                    }
                 }
-                
-            } , timeOutValue ) ;
-
+            }, timeOutValue);
         }
-       
-    }
-
+    };
 
     submitItem = async () => {
-        
-        let newCart = [];
+        let newCart = {};
 
-        this.state.cart.map( ( c ) => ( newCart.push ( { Name: c.Name, Qty: c.Qty } ) ) );
+        this.state.cart.map((c) => (newCart[c.Name] = c.Qty));
 
         const billingData = {
+            Items: newCart,
+        };
 
-            Items      : newCart
+        await sale.create(billingData);
 
-        }
-        
-        await req.sale.create( billingData );
-
-        this.setState( { cart: [] } );
+        this.setState({ cart: [] });
         this.handleClose();
-        alert("Successfully Purchased") 
-
-    }
-
+        alert("Successfully Purchased");
+    };
 
     componentDidMount() {
-
         this.addItem();
         s.clear();
-
     }
 
-
     render() {
-
         const { data, cart, popperStatus, submitDisabled } = this.state;
 
         return (
-
             <div>
+                {cart.map((item, index) => (
+                    <div key={item.id} className='item-container'>
+                        <ItemTable
+                            data={data}
+                            item={item}
+                            deleteItem={this.deleteItem}
+                            index={index}
+                            handleChange={this.handleChange}
+                            handleOtherChange={this.handleOtherChange}
+                        />
+                        <Divider />
+                    </div>
+                ))}
 
-                {
-                    cart.map( ( item, index ) => (
-
-                        <div key={item.id} className='item-container'>
-
-                            <ItemTable 
-                                data={data} 
-                                item={item} 
-                                deleteItem={this.deleteItem} 
-                                index={index} 
-                                handleChange={this.handleChange}
-                                handleOtherChange={this.handleOtherChange}
-                            /> 
-                            <Divider /> 
-
-                        </div>
-
-                    ))
-                }
-                
                 <MyFloatingButton onClick={this.addItem} />
-                <MyFloatingButton onClick={this.handleOpen} done  disabled={cart.length ? false : true }   />
+                <MyFloatingButton onClick={this.handleOpen} done disabled={cart.length ? false : true} />
 
                 <Dialog
                     open={popperStatus}
                     onClose={this.handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
+                    aria-labelledby='alert-dialog-title'
+                    aria-describedby='alert-dialog-description'
                     fullWidth
-                    maxWidth='md'
-                >
-
-                    <DialogTitle id="alert-dialog-title">{"Confirm Items"}</DialogTitle>
+                    maxWidth='md'>
+                    <DialogTitle id='alert-dialog-title'>{"Confirm Items"}</DialogTitle>
 
                     <DialogContent>
                         <ItemPopup data={data} cart={cart} />
                     </DialogContent>
 
                     <DialogActions>
-
-                    <Button onClick={this.handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={this.submitItem} color="primary" autoFocus disabled={submitDisabled} >
-                        Submit
-                    </Button>
-
+                        <Button onClick={this.handleClose} color='primary'>
+                            Cancel
+                        </Button>
+                        <Button onClick={this.submitItem} color='primary' autoFocus disabled={submitDisabled}>
+                            Submit
+                        </Button>
                     </DialogActions>
-
                 </Dialog>
-
             </div>
         );
     }
 }
-
 
 export default Billing;
