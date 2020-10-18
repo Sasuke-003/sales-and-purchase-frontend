@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import axios from "axios";
 
 import MyPasswordField from "../my-password-field/my-password-field";
 import MyTextField from "../my-text-field/my-text-field";
 import MyButton from "../my-button/my-button";
 
 import { setCurrentUser } from "../../redux/user/user.actions";
-import { req } from "../../url/url";
+import { api } from "../../server/api";
 
 import "./sign-in.styles.css";
 
@@ -41,12 +40,11 @@ class SignIn extends Component {
     };
 
     try {
-      const res = await req.user.signIn(signinData);
-
-      axios.defaults.headers.common["Authorization"] = res.AccessToken;
+      
+      const res = await api.user.signIn(signinData);
       const userData = jwt_decode(res.AccessToken);
-
       setCurrentUser({ Type: userData.utyp, Uid: userData.uid });
+
     } catch (error) {
       this.setState({ isPasswordError: true });
     }
