@@ -5,7 +5,13 @@
     flex-direction: row;
     width: 60%;
     margin-bottom: 10px;
-    justify-content: center;
+}
+
+.stock__item div {
+    display: flex;
+    flex: 0.5;
+    align-items: flex-start;
+    padding-left: 100px;
 }
 
 .stock__item:hover {

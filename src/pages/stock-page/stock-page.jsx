@@ -44,6 +44,18 @@ const StackPage = () => {
             </IconButton>
 
             <div className='stock__items'>
+                <div className='stock__header'>
+                    <div>
+                        {" "}
+                        <h2>Name </h2>
+                    </div>
+                    <div>
+                        <h2>Quantity</h2>
+                    </div>
+                    <div>
+                        <h2>Unit</h2>
+                    </div>
+                </div>
                 {data.map(({ Name, Unit, Qty }, index) => (
                     <Stock key={Name + index} Name={Name} Unit={Unit} Qty={Qty} setItem={setItem} />
                 ))}
