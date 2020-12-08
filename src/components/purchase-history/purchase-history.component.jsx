@@ -79,6 +79,7 @@ class PurchaseHistory extends Component {
                 {this.state.history.map((h) => (
                     <div key={h._id}>
                         <HistoryDisplay purchaseHistory={h} setHistoryToState={this.setHistoryToState} />
+                        <br />
                         <Divider />
                     </div>
                 ))}

@@ -78,6 +78,7 @@ class BillingHistory extends Component {
                 {this.state.history.map((h) => (
                     <div key={h._id}>
                         <BillingHistoryDisplay billingHistory={h} setHistoryToState={this.setHistoryToState} />
+                        <br />
                         <Divider />
                     </div>
                 ))}
