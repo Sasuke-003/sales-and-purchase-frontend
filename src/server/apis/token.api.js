@@ -12,8 +12,10 @@ export const token = {
 
     newAccessToken : async ( reqToBeRetried ) => {
         const res = await axios.get( url.newAccTok );
-        axios.defaults.headers.common['Authorization'] = res.AccessToken ;
-        if( reqToBeRetried ) return await retryReq( reqToBeRetried );
+        try {
+            axios.defaults.headers.common['Authorization'] = res.AccessToken ;
+            if( reqToBeRetried ) return await retryReq( reqToBeRetried );
+        } catch (err) { throw res; }
         return res;
     },
 
