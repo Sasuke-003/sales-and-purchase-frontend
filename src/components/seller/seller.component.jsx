@@ -35,7 +35,7 @@ class Seller extends Component {
             const searchData = value;
 
             if (searchData !== "") {
-                let res = await seller.autoCompleteData(searchData);
+                let res = await seller.search(searchData);
                 let arr = [];
                 if (res) {
                     for (let i = 0; i < res.SellerNames.length; i++) {
